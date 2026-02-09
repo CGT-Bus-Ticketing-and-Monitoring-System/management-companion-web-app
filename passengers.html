@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passenger Management</title>
+    
+    <link rel="stylesheet" href="css/passengers.css">
+    
+    <link rel="stylesheet" href="css/navbar.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-active-page="passengers">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">
+        
+        <section class="content-card">
+            <h2>Passenger Registration</h2>
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Balance</label>
+                        <input type="text" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Assign Card</label>
+                        <select class="input-field">
+                            <option>001153</option>
+                            <option>001154</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Temporarily Password</label>
+                        <input type="text" class="input-field">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Register</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="content-card">
+            <h2>Card Replacement</h2>
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <select class="input-field">
+                            <option>username.17</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>New Card No</label>
+                        <select class="input-field">
+                            <option>0112436</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Replace</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="content-card">
+            <h2>Passengers</h2>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Acc Balance</th>
+                            <th>Card ID</th>
+                            <th>Card Status</th>
+                            <th>Acc Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Name</td>
+                            <td>200.000</td>
+                            <td>11146</td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Name</td>
+                            <td>220.000</td>
+                            <td>12535</td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Name</td>
+                            <td>220.000</td>
+                            <td>16435</td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Name</td>
+                            <td>220.000</td>
+                            <td></td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Name</td>
+                            <td>220.000</td>
+                            <td></td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>6</td>
+                            <td>Name</td>
+                            <td>220.000</td>
+                            <td></td>
+                            <td>Active</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="content-card">
+            <h2>Edit Passenger</h2>
+            <form>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="input-field">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Balance</label>
+                        <input type="text" class="input-field">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Temporarily Password</label>
+                        <input type="text" class="input-field">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Edit</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script src="js/navbar.js"></script>
+</body>
+</html>
