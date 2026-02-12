@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cards Management - Obsidian Bus Tracking</title>
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/RFID-cards.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-active-page="cards">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">
+        
+        <section class="content-card">
+            <h2>Card Issuing</h2>
+            <form>
+                <div class="form-group">
+                    <label>RFID UID</label>
+                    <input type="text" class="input-field" placeholder="">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Register</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="content-card">
+            <h2>Cards</h2>
+            <div class="table-responsive">
+                <table class="cards-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>RFID UID</th>
+                            <th>Assigned Passenger</th>
+                            <th>Card Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1004</td>
+                            <td>1</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>1005</td>
+                            <td>Unassigned</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>1006</td>
+                            <td>Unassigned</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>1007</td>
+                            <td>Unassigned</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>1008</td>
+                            <td>Unassigned</td>
+                            <td>Active</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-file-pen icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/navbar.js"></script>
+</body>
+</html>
