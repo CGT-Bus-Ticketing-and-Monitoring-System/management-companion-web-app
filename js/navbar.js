@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="bus-status.html" data-page="status">Bus Status</a>
                     <a href="routes.html" data-page="routes">Routes</a>
                     <a href="passengers.html" data-page="passengers">Passengers</a>
-                    <a href="#" data-page="operators">Operators</a>
+                    <a href="operators.html" data-page="operators">Operators</a>
                     <a href="admin-mngmt.html" data-page="admin">Admin</a>
                     <a href="RFID-cards.html" data-page="cards">Cards</a>
                 </nav>
