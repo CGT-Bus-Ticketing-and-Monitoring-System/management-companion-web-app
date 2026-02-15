@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routes - Obsidian Bus Tracking</title>
+    
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="css/routes.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-active-page="routes">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">
+        
+        <section class="content-card">
+            <h2>Route Creation</h2>
+            <form>
+                <div class="form-group">
+                    <label>Route Code</label>
+                    <input type="text" class="input-field" placeholder="">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Location</label>
+                        <input type="text" class="input-field" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>End Location</label>
+                        <input type="text" class="input-field" placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Base Fare</label>
+                    <input type="text" class="input-field" placeholder="">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Create Route</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+
+        <section class="content-card">
+            <h2>Bus Route Assigning</h2>
+            <form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Route Code</label>
+                        <select class="input-field">
+                            <option>204</option>
+                            <option>240</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Bus Registration No</label>
+                        <select class="input-field">
+                            <option>KV 1415</option>
+                            <option>NP 2233</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Assign Bus</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+
+        <section class="content-card">
+            <h2>Bus Routes</h2>
+            <div class="table-responsive">
+                <table class="routes-table">
+                    <thead>
+                        <tr>
+                            <th>Route Code</th>
+                            <th>Start Location</th>
+                            <th>End Location</th>
+                            <th>Base Fare</th>
+                            <th>Status</th>
+                            <th>Assigned Buses</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>240</td>
+                            <td>Negombo</td>
+                            <td>Colombo</td>
+                            <td>200.000</td>
+                            <td>Active</td>
+                            <td>12</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>244</td>
+                            <td>Negombo</td>
+                            <td>Gampaha</td>
+                            <td>220.000</td>
+                            <td>Active</td>
+                            <td>25</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>244</td>
+                            <td>Negombo</td>
+                            <td>Gampaha</td>
+                            <td>220.000</td>
+                            <td>Active</td>
+                            <td>25</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>244</td>
+                            <td>Negombo</td>
+                            <td>Gampaha</td>
+                            <td>220.000</td>
+                            <td>Active</td>
+                            <td>25</td>
+                            <td class="action-icons">
+                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
+                                <i class="fa-solid fa-ban icon-delete"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <section class="content-card">
+            <h2>Route Editing</h2>
+            <form>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Location</label>
+                        <input type="text" class="input-field" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>End Location</label>
+                        <input type="text" class="input-field" placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Base Fare</label>
+                    <input type="text" class="input-field" placeholder="">
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-blue">Edit Route</button>
+                    <button type="button" class="btn btn-red">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script src="js/navbar.js"></script>
+</body>
+</html>

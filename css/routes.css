@@ -1,0 +1,156 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #bfdbfe; 
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.page-container {
+    max-width: 1600px; 
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; 
+}
+
+.content-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px 35px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.content-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px 15px;
+    background-color: #e6effa; 
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.input-field:focus {
+    border-color: #3b82f6;
+    background-color: #fff;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-blue {
+    background-color: #3b82f6; 
+}
+
+.btn-red {
+    background-color: #ef4444;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.routes-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.routes-table th {
+    text-align: left;
+    font-weight: 700;
+    padding: 12px 10px;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 0.95rem;
+}
+
+.routes-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.action-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.icon-edit {
+    color: #3b82f6; 
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.icon-delete {
+    color: #ef4444; 
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .button-group {
+        flex-direction: column-reverse; 
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
