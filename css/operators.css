@@ -13,9 +13,9 @@ body {
 }
 
 .page-container {
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
-    padding: 30px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -23,7 +23,7 @@ body {
 
 .content-card {
     background-color: white;
-    border-radius: 20px;
+    border-radius: 15px;
     padding: 30px 40px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
