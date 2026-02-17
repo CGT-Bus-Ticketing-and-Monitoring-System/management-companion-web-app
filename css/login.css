@@ -6,7 +6,7 @@
 }
 
 body {
-    background-color: #2b6cb0; 
+    background: linear-gradient(to left, #2E94D4, #004C82); 
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,17 +17,24 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 500px; 
+    gap: 200px; 
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     padding: 10px;
+}
+
+.titleSpan {
+    font-size: 2rem;
+    font-weight: 100;
+    color: white;
 }
 
 .brand-section h1 {
     color: white;
-    font-size: 3rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 4rem;
+    font-weight: 400;
+    font-family: "Pattaya", sans-serif;
+    line-height: 1.1;
 }
 
 .login-card {

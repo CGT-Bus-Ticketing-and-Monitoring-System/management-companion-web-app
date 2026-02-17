@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Pattaya&display=swap');
+
 .navbar {
     background-color: #2b6cb0; 
     height: 80px;
@@ -14,7 +16,8 @@
 }
 
 .navbar .logo {
-    font-weight: 700;
+    font-family: "Pattaya", sans-serif;
+    font-weight: 400;
     font-size: 1.2rem;
     line-height: 1.2;
 }

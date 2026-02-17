@@ -1,0 +1,3 @@
+const CONFIG = {
+    API_BASE_URL: 'YOUR_BACKEND_URL_HERE'
+};
