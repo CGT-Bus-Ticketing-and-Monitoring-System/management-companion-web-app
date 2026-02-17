@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/routes.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body data-active-page="routes">
@@ -18,63 +17,57 @@
         
         <section class="content-card">
             <h2>Route Creation</h2>
-            <form>
+            <form id="createRouteForm">
                 <div class="form-group">
                     <label>Route Code</label>
-                    <input type="text" class="input-field" placeholder="">
+                    <input type="text" id="createCode" class="input-field" placeholder="e.g. 101" required>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Location</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="createStart" class="input-field" placeholder="e.g. Colombo" required>
                     </div>
                     <div class="form-group">
                         <label>End Location</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="createEnd" class="input-field" placeholder="e.g. Kandy" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Base Fare</label>
-                    <input type="text" class="input-field" placeholder="">
+                    <input type="number" step="0.01" id="createFare" class="input-field" placeholder="0.00" required>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Create Route</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Create Route</button>
+                    <button type="button" class="btn btn-red" onclick="this.form.reset()">Cancel</button>
                 </div>
             </form>
         </section>
-
 
         <section class="content-card">
             <h2>Bus Route Assigning</h2>
-            <form>
+            <form id="assignBusForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Route Code</label>
-                        <select class="input-field">
-                            <option>204</option>
-                            <option>240</option>
-                        </select>
+                        <select id="assignRouteSelect" class="input-field">
+                            </select>
                     </div>
                     <div class="form-group">
                         <label>Bus Registration No</label>
-                        <select class="input-field">
-                            <option>KV 1415</option>
-                            <option>NP 2233</option>
-                        </select>
+                        <select id="assignBusSelect" class="input-field">
+                            </select>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Assign Bus</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Assign Bus</button>
+                    <button type="button" class="btn btn-red" onclick="this.form.reset()">Cancel</button>
                 </div>
             </form>
         </section>
-
 
         <section class="content-card">
             <h2>Bus Routes</h2>
@@ -92,82 +85,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>240</td>
-                            <td>Negombo</td>
-                            <td>Colombo</td>
-                            <td>200.000</td>
-                            <td>Active</td>
-                            <td>12</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>244</td>
-                            <td>Negombo</td>
-                            <td>Gampaha</td>
-                            <td>220.000</td>
-                            <td>Active</td>
-                            <td>25</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>244</td>
-                            <td>Negombo</td>
-                            <td>Gampaha</td>
-                            <td>220.000</td>
-                            <td>Active</td>
-                            <td>25</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                         <tr>
-                            <td>244</td>
-                            <td>Negombo</td>
-                            <td>Gampaha</td>
-                            <td>220.000</td>
-                            <td>Active</td>
-                            <td>25</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
 
-
         <section class="content-card">
             <h2>Route Editing</h2>
-            <form>
+            <form id="editRouteForm">
+                <input type="hidden" id="editRouteId">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Start Location</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="editStart" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>End Location</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="editEnd" class="input-field" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Base Fare</label>
-                    <input type="text" class="input-field" placeholder="">
+                    <input type="number" step="0.01" id="editFare" class="input-field" required>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Edit Route</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Edit Route</button>
+                    <button type="button" class="btn btn-red" onclick="document.getElementById('editRouteForm').reset()">Cancel</button>
                 </div>
             </form>
         </section>
@@ -175,5 +120,7 @@
     </main>
 
     <script src="js/navbar.js"></script>
+    <script src="js/config.js"></script> 
+    <script src="js/routes.js"></script>
 </body>
 </html>
