@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="operators.html" data-page="operators">Operators</a>
                     <a href="admin-mngmt.html" data-page="admin">Admin</a>
                     <a href="RFID-cards.html" data-page="cards">Cards</a>
+                    <a href="schedule.html" data-page="schedule">Schedule</a>
                 </nav>
 
                 <button class="logout-btn" onclick="window.location.href='index.html'">Log Out</button>
