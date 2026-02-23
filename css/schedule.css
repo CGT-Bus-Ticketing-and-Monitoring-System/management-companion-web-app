@@ -1,0 +1,162 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #bfdbfe;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.page-container {
+    max-width: 1600px; 
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.content-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 25px 35px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.content-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #000;
+}
+
+.form-group {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #e6effa;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    appearance: auto; 
+}
+
+.input-field:focus {
+    border-color: #3b82f6;
+    background-color: #fff;
+}
+
+.form-row {
+    display: flex;
+    gap: 30px;
+}
+
+.form-row-3 {
+    display: flex;
+    gap: 30px; 
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    color: white;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-blue { background-color: #3b82f6; }
+.btn-red { background-color: #ef4444; }
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.schedule-table th {
+    text-align: left;
+    font-weight: 700;
+    padding: 12px 10px;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 1rem;
+    color: #000;
+}
+
+.schedule-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+    color: #000;
+}
+
+.action-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.icon-edit {
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.icon-delete {
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .form-row, .form-row-3 {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .button-group {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .content-card {
+        padding: 20px;
+    }
+}
