@@ -103,3 +103,26 @@ button:hover {
         text-align: center;
     }
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px; 
+}
+
+#togglePassword {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #64748b; 
+    transition: color 0.2s;
+}
+
+#togglePassword:hover {
+    color: #3b82f6;
+}
