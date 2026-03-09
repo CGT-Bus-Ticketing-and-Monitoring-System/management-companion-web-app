@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadDashboardStats(token) {
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/dashboard-stats`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/dashboard-stats`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
