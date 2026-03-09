@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operator Management</title>
-    
     <link rel="stylesheet" href="css/operators.css">
-    
     <link rel="stylesheet" href="css/navbar.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body data-active-page="operators">
@@ -19,44 +16,43 @@
         
         <section class="content-card">
             <h2>Operator Registration</h2>
-            <form>
+            <form id="createOperatorForm">
                 <div class="form-grid">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="createFname" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="createLname" class="input-field" required>
                     </div>
 
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="createUsername" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="input-field">
+                        <input type="email" id="createEmail" class="input-field" required>
                     </div>
 
                     <div class="form-group full-width">
                         <label>Phone</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="createPhone" class="input-field" required>
                     </div>
 
                     <div class="form-group full-width">
-                        <label>Temporarily Password</label>
-                        <input type="text" class="input-field">
+                        <label>Temporary Password</label>
+                        <input type="text" id="createPassword" class="input-field" required>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Register</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Register</button>
+                    <button type="reset" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
-
 
         <section class="content-card">
             <h2>Operators</h2>
@@ -73,114 +69,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>12</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>24</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>17</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>3</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>4</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                         <tr>
-                            <td>6</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>2</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
 
-
         <section class="content-card">
             <h2>Edit Operator</h2>
-            <form>
+            <form id="editOperatorForm">
+                <input type="hidden" id="editOperatorId">
+                
                 <div class="form-grid">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="editFname" class="input-field">
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="editLname" class="input-field">
                     </div>
 
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="editUsername" class="input-field">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="input-field">
+                        <input type="email" id="editEmail" class="input-field">
                     </div>
 
                      <div class="form-group full-width">
                         <label>Phone</label>
-                        <input type="text" class="input-field">
+                        <input type="text" id="editPhone" class="input-field">
                     </div>
 
                      <div class="form-group full-width">
-                        <label>Temporarily Password</label>
-                        <input type="text" class="input-field">
+                        <label>New Temporary Password (Leave blank to keep current)</label>
+                        <input type="text" id="editPassword" class="input-field">
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Edit</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Edit</button>
+                    <button type="reset" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
@@ -188,5 +119,7 @@
     </main>
 
     <script src="js/navbar.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/operators.js"></script>
 </body>
 </html>
