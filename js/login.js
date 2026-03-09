@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     localStorage.setItem('adminToken', result.token);
+                    localStorage.setItem('adminFName', result.fname);
                     
                     window.location.href = 'home.html';
                 } else {
