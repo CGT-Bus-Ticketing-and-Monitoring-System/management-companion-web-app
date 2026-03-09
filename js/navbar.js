@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbarPlaceholder = document.getElementById('navbar-placeholder');
     
     if (navbarPlaceholder) {
+        const currentPage = document.body.getAttribute('data-active-page');
+
         navbarPlaceholder.outerHTML = `
             <header class="navbar">
                 <div class="logo">Obsidian Bus<br>Tracking</div>
@@ -17,18 +19,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="schedule.html" data-page="schedule">Schedule</a>
                 </nav>
 
-                <button class="logout-btn" onclick="window.location.href='index.html'">Log Out</button>
+                <div class="user-controls">
+                    <button id="logout-btn">Log Out</button>
+                </div>
             </header>
         `;
 
-        const currentPage = document.body.getAttribute('data-active-page');
-        
         const links = document.querySelectorAll('.navbar .nav-links a');
-        
         links.forEach(link => {
             if (link.getAttribute('data-page') === currentPage) {
                 link.classList.add('active');
             }
         });
+
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                if (confirm("Are you sure you want to log out?")) {
+                    localStorage.removeItem('adminToken');
+                    localStorage.removeItem('adminFName');
+                    window.location.href = 'index.html';
+                }
+            });
+        }
     }
 });
