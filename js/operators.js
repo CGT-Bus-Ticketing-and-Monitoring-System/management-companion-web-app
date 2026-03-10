@@ -1,21 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
-    //Check if the user is actually logged in
+document.addEventListener('DOMContentLoaded', () => {    
     const token = localStorage.getItem('adminToken');
     if (!token) {
         window.location.href = 'index.html'; 
         return;
-    }
-
-    //Load the initial table data
-    loadOperators();
-    
-    // OPERATOR FORM SUBMISSION   
+    }   
+    loadOperators();    
+    // operator form submit
     const createForm = document.getElementById('createOperatorForm');
     if (createForm) {
         createForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault();    
             
-            //  data from the input fields
             const data = {
                 fname: document.getElementById('createFname').value,
                 lname: document.getElementById('createLname').value,
@@ -24,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone: document.getElementById('createPhone').value,
                 password: document.getElementById('createPassword').value
             };
-
             try {
                 const res = await fetch(`${CONFIG.API_BASE_URL}/operators/create`, {
                     method: 'POST',
@@ -47,16 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Connection Error');
             }
         });
-    }
-
-   
-    // EDIT OPERATOR FORM 
-  
+    }   
+    // operator edit
     const editForm = document.getElementById('editOperatorForm');
     if (editForm) {
         editForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+            e.preventDefault();            
             const id = document.getElementById('editOperatorId').value;
             const data = {
                 fname: document.getElementById('editFname').value,
@@ -66,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone: document.getElementById('editPhone').value,
                 password: document.getElementById('editPassword').value 
             };
-
             try {
                 const res = await fetch(`${CONFIG.API_BASE_URL}/operators/update/${id}`, {
                     method: 'PUT',
@@ -93,11 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-// FETCH AND DISPLAY OPERATORS (TABLE)
 async function loadOperators() {
-    const token = localStorage.getItem('adminToken');
-    
+    const token = localStorage.getItem('adminToken');    
     try {
         const res = await fetch(`${CONFIG.API_BASE_URL}/operators`, {
             method: 'GET',
@@ -111,9 +97,7 @@ async function loadOperators() {
         if (operators.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No active operators found.</td></tr>';
             return;
-        }
-
-       
+        }       
         operators.forEach(op => {
             const row = `
                 <tr>
@@ -136,13 +120,8 @@ async function loadOperators() {
         console.error('Error loading operators:', error);
     }
 }
-
-
-//EDIT & DEACTIVATE
-
-// Edit pencil icon
+//edit and deactivate
 window.setupEdit = function(id, fname, lname, username, email, phone) {
-    // Fill the Edit form with the existing data
     document.getElementById('editOperatorId').value = id;
     document.getElementById('editFname').value = fname;
     document.getElementById('editLname').value = lname;
@@ -152,8 +131,6 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     document.getElementById('editPassword').value = '';    
     document.getElementById('editOperatorForm').scrollIntoView({ behavior: 'smooth' });
 };
-
-//  Trash icon
 window.deactivateOperator = async function(id) {
     
     if (!confirm('Are you sure you want to deactivate this operator?')) return;
