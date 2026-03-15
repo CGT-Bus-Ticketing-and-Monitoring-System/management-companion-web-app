@@ -11,7 +11,7 @@ body {
 }
 
 .page-container {
-    padding: 40px 60px;
+    padding: 20px; 
     display: flex;
     justify-content: center;
 }
@@ -25,12 +25,6 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
-.page-container {
-    padding: 20px; 
-    display: flex;
-    justify-content: center;
-}
-
 .content-card h2 {
     font-size: 1.8rem;
     font-weight: 700;
@@ -38,8 +32,23 @@ body {
     color: #000;
 }
 
+.search-container {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    padding: 12px; 
+    width: 100%; 
+    max-width: 350px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    font-size: 1rem; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
 .status-table {
     width: 100%;
+    border-collapse: collapse; 
 }
 
 .status-table th {
@@ -56,6 +65,12 @@ body {
     font-size: 1.1rem;
     color: #333;
     border-bottom: 1px solid #ccc; 
+}
+
+.loading-row td {
+    text-align: center; 
+    color: #666; 
+    font-style: italic;
 }
 
 @media (max-width: 768px) {

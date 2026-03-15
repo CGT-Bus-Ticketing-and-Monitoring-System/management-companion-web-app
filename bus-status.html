@@ -16,6 +16,10 @@
         <div class="content-card">
             <h2>Current Running Bus Status</h2>
 
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Registration No (e.g. WP-1122)...">
+            </div>
+
             <table class="status-table">
                 <thead>
                     <tr>
@@ -26,68 +30,17 @@
                         <th>Passenger Count</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td>{gps_timestamp}</td>
-                        <td>23</td>
-                    </tr>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                     <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                     <tr>
-                        <td>KV1514</td>
-                        <td>Bus 1</td>
-                        <td>240</td>
-                        <td></td>
-                        <td></td>
+                <tbody id="busStatusTableBody">
+                    <tr class="loading-row">
+                        <td colspan="5">Loading bus data...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </main>
 
+    <script src="config.js"></script>
     <script src="js/navbar.js"></script>
+    <script src="js/bus-status.js"></script>
 </body>
 </html>
