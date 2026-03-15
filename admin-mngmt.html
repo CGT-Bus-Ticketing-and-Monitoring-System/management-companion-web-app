@@ -18,42 +18,42 @@
         
         <section class="content-card">
             <h2>Admin Registration</h2>
-            <form>
+            <form id="registerForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="regFname" class="input-field" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="regLname" class="input-field" placeholder="" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="regUsername" class="input-field" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="input-field" placeholder="">
+                        <input type="email" id="regEmail" class="input-field" placeholder="" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="tel" class="input-field" placeholder="">
+                    <input type="tel" id="regPhone" class="input-field" placeholder="" required>
                 </div>
 
                 <div class="form-group">
                     <label>Temporarily Password</label>
-                    <input type="password" class="input-field" placeholder="">
+                    <input type="password" id="regPassword" class="input-field" placeholder="" required>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Register</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Register</button>
+                    <button type="reset" class="btn btn-red">Cancel</button> 
                 </div>
             </form>
         </section>
@@ -72,58 +72,8 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Name</td>
-                            <td>0112253476</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="adminTableBody">
+                        </tbody>
                 </table>
             </div>
         </section>
@@ -131,48 +81,50 @@
 
         <section class="content-card">
             <h2>Edit Admin</h2>
-            <form>
+            <form id="editForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>First Name</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="editFname" class="input-field" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="editLname" class="input-field" placeholder="" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label>Username</label>
-                        <input type="text" class="input-field" placeholder="">
+                        <input type="text" id="editUsername" class="input-field" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" class="input-field" placeholder="">
+                        <input type="email" id="editEmail" class="input-field" placeholder="" required>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Phone</label>
-                    <input type="tel" class="input-field" placeholder="">
+                    <input type="tel" id="editPhone" class="input-field" placeholder="" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Temporarily Password</label>
-                    <input type="password" class="input-field" placeholder="">
+                    <label>New Password (Leave blank to keep current)</label>
+                    <input type="password" id="editPassword" class="input-field" placeholder="">
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Edit</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">save</button>
+                    <button type="reset" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
 
     </main>
 
+    <script src="config.js"></script> 
     <script src="js/navbar.js"></script>
+    <script src="js/admin-mngmnt.js"></script>
 </body>
 </html>

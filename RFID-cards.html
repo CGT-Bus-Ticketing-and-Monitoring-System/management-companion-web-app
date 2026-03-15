@@ -16,21 +16,26 @@
         
         <section class="content-card">
             <h2>Card Issuing</h2>
-            <form>
+            <form id="registerCardForm">
                 <div class="form-group">
                     <label>RFID UID</label>
-                    <input type="text" class="input-field" placeholder="">
+                    <input type="text" id="regRfidUid" class="input-field" placeholder="e.g. A1B2C3D4" required>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="btn btn-blue">Register</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Register</button>
+                    <button type="reset" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
 
-        <section class="content-card">
+       <section class="content-card">
             <h2>Cards</h2>
+            
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="searchCardInput" class="input-field" placeholder="Search by RFID UID..." style="max-width: 300px;">
+            </div>
+            
             <div class="table-responsive">
                 <table class="cards-table">
                     <thead>
@@ -42,64 +47,16 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>1004</td>
-                            <td>1</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>1005</td>
-                            <td>Unassigned</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>1006</td>
-                            <td>Unassigned</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>1007</td>
-                            <td>Unassigned</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>1008</td>
-                            <td>Unassigned</td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-file-pen icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="cardsTableBody">
+                        </tbody>
                 </table>
             </div>
         </section>
 
     </main>
 
+    <script src="config.js"></script> 
     <script src="js/navbar.js"></script>
+    <script src="js/rfid-cards.js"></script>
 </body>
 </html>
