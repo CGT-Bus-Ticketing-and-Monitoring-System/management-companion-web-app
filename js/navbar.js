@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         navbarPlaceholder.outerHTML = `
             <header class="navbar">
-                <div class="logo">Obsidian Bus<br>Tracking</div>
+                <div class="logo">Bus<br>Buddy</div>
                 
                 <nav class="nav-links">
                     <a href="home.html" data-page="home">Home</a>
