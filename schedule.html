@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/schedule.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body data-active-page="schedule"> 
@@ -17,22 +16,18 @@
         
         <section class="content-card">
             <h2>Bus Schedule Selection</h2>
-            <form>
+            <form id="selectionForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label>Route Code</label>
-                        <select class="input-field">
-                            <option value=""></option>
-                            <option value="240">240</option>
-                            <option value="244">244</option>
+                        <select id="routeSelect" class="input-field" required>
+                            <option value="" disabled selected>Select Route</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Bus Name</label>
-                        <select class="input-field">
-                            <option value=""></option>
-                            <option value="bus1">Bus 1</option>
-                            <option value="bus2">Bus 2</option>
+                        <select id="busSelect" class="input-field" required>
+                            <option value="" disabled selected>Select Bus</option>
                         </select>
                     </div>
                 </div>
@@ -45,23 +40,24 @@
                 <div class="form-row-3">
                     <div class="form-group">
                         <label>Departure Time</label>
-                        <input type="time" class="input-field">
+                        <input type="time" id="addDeparture" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Arrival time</label>
-                        <input type="time" class="input-field">
+                        <input type="time" id="addArrival" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Direction</label>
-                        <select class="input-field">
-                            <option value=""></option>
+                        <select id="addDirection" class="input-field" required>
+                            <option value="" disabled selected>Select Direction</option>
+                            <option value="FORWARD">FORWARD</option>
+                            <option value="RETURN">RETURN</option>
                         </select>
                     </div>
                 </div>
-
                 <div class="button-group">
-                    <button type="submit" class="btn btn-blue">Schedule</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Add Schedule</button>
+                    <button type="reset" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
@@ -79,61 +75,49 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="scheduleTableBody">
                         <tr>
-                            <td>09:00</td>
-                            <td>09:00</td>
-                            <td></td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
+                            <td colspan="5" style="text-align: center; color: #666;">Please select a Route and a Bus to view the schedule.</td>
                         </tr>
-                        <tr>
-                            <td>14:15</td>
-                            <td>14:15</td>
-                            <td></td>
-                            <td>Active</td>
-                            <td class="action-icons">
-                                <i class="fa-solid fa-pen-to-square icon-edit"></i>
-                                <i class="fa-solid fa-ban icon-delete"></i>
-                            </td>
-                        </tr>                        
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <section class="content-card">
+        <section class="content-card" id="editScheduleSection" style="display: none;">
             <h2>Bus Schedule Editing</h2>
             <form id="editScheduleForm">
+                <input type="hidden" id="editScheduleId">
+                
                 <div class="form-row-3">
                     <div class="form-group">
                         <label>Departure Time</label>
-                        <input type="time" class="input-field">
+                        <input type="time" id="editDeparture" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Arrival time</label>
-                        <input type="time" class="input-field">
+                        <input type="time" id="editArrival" class="input-field" required>
                     </div>
                     <div class="form-group">
                         <label>Direction</label>
-                        <select class="input-field">
-                            <option value=""></option>
+                        <select id="editDirection" class="input-field" required>
+                            <option value="FORWARD">FORWARD</option>
+                            <option value="RETURN">RETURN</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="btn btn-blue">Edit</button>
-                    <button type="button" class="btn btn-red">Cancel</button>
+                    <button type="submit" class="btn btn-blue">Save Changes</button>
+                    <button type="button" id="cancelEditBtn" class="btn btn-red">Cancel</button>
                 </div>
             </form>
         </section>
 
     </main>
 
+    <script src="config.js"></script>
     <script src="js/navbar.js"></script>
+    <script src="js/schedule.js"></script>
 </body>
 </html>
