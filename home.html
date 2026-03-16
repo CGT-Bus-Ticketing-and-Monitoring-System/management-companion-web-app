@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/home.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body data-active-page="home">
@@ -15,61 +14,71 @@
     <div id="navbar-placeholder"></div>
 
     <main class="dashboard-container">
-        <h1 id="welcomeText"></h1>
+        <h1 id="welcomeText">Dashboard Overview</h1>
 
         <div class="stats-grid">
             <div class="card">
                 <div class="card-header">
-                    <i class="fa-solid fa-bus"></i>
+                    <div class="icon-box active-icon">
+                        <i class="fa-solid fa-bus"></i>
+                    </div>
                     <h3>Total Active<br>Buses</h3>
                 </div>
-                <p class="stat-number" id="activeBusesCount"></p>
+                <p class="stat-number" id="activeBusesCount">--</p>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    
-                    <div class="icon-wrapper">
+                    <div class="icon-box offline-icon icon-wrapper">
                         <i class="fa-solid fa-bus-simple"></i>
                         <i class="fa-solid fa-circle-exclamation alert-badge"></i>
                     </div>
                     <h3>Total Offline<br>Buses</h3>
                 </div>
-                <p class="stat-number" id="offlineBusesCount"></p>
+                <p class="stat-number" id="offlineBusesCount">--</p>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <i class="fa-solid fa-user"></i>
+                    <div class="icon-box users-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
                     <h3>Total Registered<br>Passengers</h3>
                 </div>
-                <p class="stat-number" id="totalPassengersCount"></p>
+                <p class="stat-number" id="totalPassengersCount">--</p>
             </div>
 
             <div class="card">
                 <div class="card-header">
-                    <i class="fa-solid fa-suitcase"></i>
+                    <div class="icon-box trips-icon">
+                        <i class="fa-solid fa-suitcase"></i>
+                    </div>
                     <h3>Trips Commenced<br>Today</h3>
                 </div>
-                <p class="stat-number" id="tripsTodayCount"></p>
+                <p class="stat-number" id="tripsTodayCount">--</p>
             </div>
         </div>
 
         <div class="report-section">
             <div class="report-info">
-                <i class="fa-solid fa-file"></i>
-                <h3>Generate System<br>Summary Reports</h3>
+                <div class="icon-box report-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div>
+                    <h3>Generate System Summary Reports</h3>
+                    <p class="report-subtitle">Download analytics and activity logs</p>
+                </div>
             </div>
             
             <div class="report-actions">
                 <div class="select-wrapper">
-                    <select name="date-range" id="date-range">
+                    <select name="date-range" id="date-range" class="input-field">
                         <option value="30">Last 30 Days</option>
                         <option value="7">Last 7 Days</option>
                         <option value="1">Today</option>
                     </select>
                 </div>
-                <button class="generate-btn">Generate</button>
+                <button class="generate-btn"><i class="fa-solid fa-download"></i> Generate</button>
             </div>
         </div>
 

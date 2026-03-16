@@ -95,8 +95,13 @@ body {
     opacity: 0.85;
 }
 
-.btn-blue { background-color: #3b82f6; }
-.btn-red { background-color: #ef4444; }
+.btn-blue { 
+    background-color: #4299e1;
+}
+
+.btn-red { 
+    background-color: #f56565;
+}
 
 .table-responsive {
     overflow-x: auto;
