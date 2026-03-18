@@ -1,24 +1,28 @@
-
 let allCards = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-        alert('You must be logged in to view this page.');
-        window.location.href = 'index.html';
+        Swal.fire({
+            title: 'Unauthorized',
+            text: 'You must be logged in to view this page.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        }).then(() => {
+            window.location.href = 'index.html';
+        });
         return;
     }
 
     loadCards();
 
-    
     const searchInput = document.getElementById('searchCardInput');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase().trim();
             
             const filteredCards = allCards.filter(card => {
-               
                 return card.rfid_uid.toLowerCase().includes(searchTerm) || 
                        card.status.toLowerCase().includes(searchTerm) ||
                        card.passenger_name.toLowerCase().includes(searchTerm);
@@ -28,20 +32,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     const registerForm = document.getElementById('registerCardForm');
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const rfidUid = document.getElementById('regRfidUid').value;
+            const rfidUid = document.getElementById('regRfidUid').value.trim();
+
+            if (!rfidUid) {
+                return Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please enter an RFID UID.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
+            }
 
             try {
                 const res = await fetch(`${CONFIG.API_BASE_URL}/cards/register`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ rfid_uid: rfidUid })
                 });
@@ -49,20 +62,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Card Registered Successfully!');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Card Registered Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     registerForm.reset();
                     loadCards(); 
                 } else {
-                    alert(result.message || 'Error registering card');
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Error registering card',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error('Registration Error:', error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: 'Could not connect to the server.',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
 });
-
 
 async function loadCards() {
     try {
@@ -80,6 +110,13 @@ async function loadCards() {
         
     } catch (error) {
         console.error('Error loading cards:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to load cards.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 }
 
@@ -101,7 +138,7 @@ function renderTable(cardsToDisplay) {
         let passengerDisplay = card.passenger_name;
         let passengerStyle = card.passenger_name === 'Unassigned' 
             ? 'color: #e74c3c; font-style: italic;' 
-            : 'color: #2c3e50; font-weight: bold;';
+            : 'color: #004C82; font-weight: bold;';
 
         const row = `
             <tr>
@@ -122,7 +159,18 @@ function renderTable(cardsToDisplay) {
 }
 
 window.updateStatus = async function(id, newStatus) {
-    if(!confirm(`Are you sure you want to change this card's status to ${newStatus}?`)) return;
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to change this card's status to ${newStatus}?`,
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#004C82',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, update it!'
+    });
+
+    if (!confirmation.isConfirmed) return;
 
     try {
         const res = await fetch(`${CONFIG.API_BASE_URL}/cards/status/${id}`, { 
@@ -135,15 +183,34 @@ window.updateStatus = async function(id, newStatus) {
         });
 
         if (res.ok) {
-            alert(`Card status changed to ${newStatus}`);
+            Swal.fire({
+                title: 'Updated!',
+                text: `Card status changed to ${newStatus}`,
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
             loadCards(); 
             
             const searchInput = document.getElementById('searchCardInput');
             if (searchInput) searchInput.value = '';
         } else {
-            alert('Failed to update card status');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to update card status',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
         }
     } catch (error) {
         console.error('Status Update Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 };

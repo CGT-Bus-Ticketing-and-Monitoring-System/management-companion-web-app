@@ -1,12 +1,45 @@
-
 let currentEditAdminId = null;
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^[0-9]{10}$/;
+
+function validateAdminData(data) {
+    if (!emailRegex.test(data.email)) {
+        Swal.fire({
+            title: 'Invalid Input',
+            text: 'Please enter a valid email address.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82',
+            
+        });
+        return false;
+    }
+    if (!phoneRegex.test(data.phone)) {
+        Swal.fire({
+            title: 'Invalid Input',
+            text: 'Please enter a valid 10-digit mobile number.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+        return false;
+    }
+    return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  
     const token = localStorage.getItem('adminToken');
     if (!token) {
-        alert('You must be logged in to view this page.');
-        window.location.href = 'index.html';
+        Swal.fire({
+            icon: 'error',
+            title: 'Unauthorized',
+            text: 'You must be logged in to view this page.',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        }).then(() => {
+            window.location.href = 'index.html';
+        });
         return;
     }
 
@@ -26,8 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: document.getElementById('regPassword').value
             };
 
+            if (!validateAdminData(data)) return;
+
             try {
-              
                 const res = await fetch(`${CONFIG.API_BASE_URL}/manage/register`, {
                     method: 'POST',
                     headers: { 
@@ -40,19 +74,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Admin Registered Successfully!');
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Admin Registered Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     registerForm.reset(); 
                     loadAdmins(); 
                 } else {
-                    alert(result.message || 'Error registering admin');
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Error registering admin',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error('Registration Error:', error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Connection Error',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
-
 
     const editForm = document.getElementById('editForm');
     if (editForm) {
@@ -60,7 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
 
             if (!currentEditAdminId) {
-                alert('Please select an admin to edit from the table first.');
+                Swal.fire({
+                    title: 'Warning',
+                    text: 'Please select an admin to edit from the table first.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
                 return;
             }
 
@@ -73,8 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: document.getElementById('editPassword').value 
             };
 
+            if (!validateAdminData(data)) return;
+
             try {
-               
                 const res = await fetch(`${CONFIG.API_BASE_URL}/manage/update/${currentEditAdminId}`, {
                     method: 'PUT',
                     headers: { 
@@ -87,28 +145,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await res.json();
 
                 if (res.ok) {
-                    alert('Admin Updated Successfully!');
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Admin Updated Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     editForm.reset();
                     currentEditAdminId = null; 
                     loadAdmins();
                     document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth' });
                 } else {
-                    alert(result.message || 'Error updating admin');
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Error updating admin',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error('Update Error:', error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Connection Error',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
 });
 
-
-
-
 async function loadAdmins() {
     try {
-       
         const res = await fetch(`${CONFIG.API_BASE_URL}/manage`, {
             method: 'GET',
             headers: {
@@ -128,17 +200,16 @@ async function loadAdmins() {
         }
 
         admins.forEach(admin => {
-         
             const row = `
                 <tr>
                     <td>${admin.admin_id}</td>
                     <td>${admin.username}</td>
                     <td>${admin.phone}</td>
-                    <td><span style="color: green; font-weight: bold;">${admin.status}</span></td>
+                    <td><span style="color: #16a34a; font-weight: 700;">${admin.status}</span></td>
                     <td class="action-icons">
-                        <i class="fa-solid fa-file-pen icon-edit" style="cursor: pointer; color: #3498db; margin-right: 10px;" 
+                        <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;"
                            onclick="setupEdit('${admin.admin_id}', '${admin.fname}', '${admin.lname}', '${admin.username}', '${admin.email}', '${admin.phone}')"></i>
-                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c;" 
+                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
                            onclick="deactivateAdmin('${admin.admin_id}')"></i>
                     </td>
                 </tr>
@@ -150,7 +221,6 @@ async function loadAdmins() {
     }
 }
 
-
 window.setupEdit = function(id, fname, lname, username, email, phone) {
     currentEditAdminId = id; 
     
@@ -161,30 +231,57 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     document.getElementById('editPhone').value = phone;
     document.getElementById('editPassword').value = ''; 
 
-  
     document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
 };
 
+window.deactivateAdmin = function(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to deactivate this admin account?',
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#ff2727e5',
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, deactivate it!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/manage/deactivate/${id}`, { 
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
 
-window.deactivateAdmin = async function(id) {
-    if(!confirm('Are you sure you want to deactivate this admin account?')) return;
-
-    try {
-        
-        const res = await fetch(`${CONFIG.API_BASE_URL}/manage/deactivate/${id}`, { 
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                if (res.ok) {
+                    Swal.fire({
+                        title: 'Deactivated!',
+                        text: 'Admin has been deactivated.',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
+                    loadAdmins(); 
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to deactivate admin.',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
+                }
+            } catch (error) {
+                console.error('Deactivate Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Connection error occurred.',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
-        });
-
-        if (res.ok) {
-            alert('Admin deactivated');
-            loadAdmins(); 
-        } else {
-            alert('Failed to deactivate admin');
         }
-    } catch (error) {
-        console.error('Deactivate Error:', error);
-    }
+    });
 };

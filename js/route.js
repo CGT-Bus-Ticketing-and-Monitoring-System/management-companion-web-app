@@ -7,12 +7,32 @@ document.addEventListener('DOMContentLoaded', () => {
         createForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const data = {
-                route_code: document.getElementById('createCode').value,
-                start_location: document.getElementById('createStart').value,
-                end_location: document.getElementById('createEnd').value,
-                base_fare: document.getElementById('createFare').value
-            };
+            const route_code = document.getElementById('createCode').value.trim();
+            const start_location = document.getElementById('createStart').value.trim();
+            const end_location = document.getElementById('createEnd').value.trim();
+            const base_fare = document.getElementById('createFare').value.trim();
+
+            if (!route_code || !start_location || !end_location || !base_fare) {
+                return Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please fill in all fields.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
+            }
+
+            if (!/^\d+$/.test(route_code)) {
+                return Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Route code must be a number only.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
+            }
+
+            const data = { route_code, start_location, end_location, base_fare };
 
             try {
                 const res = await fetch(`${CONFIG.API_BASE_URL}/routes/create`, {
@@ -23,16 +43,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const result = await res.json();
                 if (res.ok) {
-                    alert('Route Created Successfully!');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Route Created Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     createForm.reset();
                     loadRoutes();
                     loadAssignmentDropdowns();
                 } else {
-                    alert(result.message || 'Error creating route');
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Error creating route',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error(error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: 'Could not connect to the server.',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
@@ -46,8 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const busReg = document.getElementById('assignBusSelect').value;
 
             if (!routeId || !busReg) {
-                alert("Please select both a Route and a Bus.");
-                return;
+                return Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please select both a Route and a Bus.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
 
             try {
@@ -59,15 +102,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const result = await res.json();
                 if (res.ok) {
-                    alert('Bus Assigned Successfully!');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Bus Assigned Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     assignForm.reset();
                     loadRoutes(); 
                 } else {
-                    alert(result.message || 'Error assigning bus');
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Error assigning bus',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error(error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: 'Could not connect to the server.',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
@@ -78,11 +139,21 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const id = document.getElementById('editRouteId').value;
-            const data = {
-                start_location: document.getElementById('editStart').value,
-                end_location: document.getElementById('editEnd').value,
-                base_fare: document.getElementById('editFare').value
-            };
+            const start_location = document.getElementById('editStart').value.trim();
+            const end_location = document.getElementById('editEnd').value.trim();
+            const base_fare = document.getElementById('editFare').value.trim();
+
+            if (!start_location || !end_location || !base_fare) {
+                return Swal.fire({
+                    title: 'Validation Error',
+                    text: 'Please fill in all fields.',
+                    icon: 'warning',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
+            }
+
+            const data = { start_location, end_location, base_fare };
 
             try {
                 const res = await fetch(`${CONFIG.API_BASE_URL}/routes/update/${id}`, {
@@ -91,17 +162,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(data)
                 });
 
-                const result = await res.json();
                 if (res.ok) {
-                    alert('Route Updated!');
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Route Updated Successfully!',
+                        icon: 'success',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                     loadRoutes();
                     document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth' });
                 } else {
-                    alert(result.message || 'Update failed');
+                    const result = await res.json();
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.message || 'Update failed',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82'
+                    });
                 }
             } catch (error) {
                 console.error(error);
-                alert('Connection Error');
+                Swal.fire({
+                    title: 'Connection Error',
+                    text: 'Could not connect to the server.',
+                    icon: 'error',
+                    iconColor: '#004C82',
+                    confirmButtonColor: '#004C82'
+                });
             }
         });
     }
@@ -141,6 +230,13 @@ async function loadRoutes() {
         });
     } catch (error) {
         console.error('Error loading routes:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to load routes data.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 }
 
@@ -168,17 +264,48 @@ async function loadAssignmentDropdowns() {
 }
 
 window.deactivateRoute = async function(id) {
-    if(!confirm('Are you sure you want to deactivate this route?')) return;
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to deactivate this route?",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, deactivate it!'
+    });
+
+    if (!confirmation.isConfirmed) return;
 
     try {
         const res = await fetch(`${CONFIG.API_BASE_URL}/routes/deactivate/${id}`, { method: 'PUT' });
         if (res.ok) {
+            Swal.fire({
+                title: 'Deactivated!',
+                text: 'Route has been deactivated.',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
             loadRoutes();
         } else {
-            alert('Failed to deactivate route');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to deactivate route',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
         }
     } catch (error) {
         console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 };
 
