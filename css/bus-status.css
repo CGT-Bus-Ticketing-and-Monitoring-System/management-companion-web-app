@@ -1,35 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 body {
-    background-color: #bfdbfe; 
+    background-color: #f0f9ff;
+    color: #0f172a;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .page-container {
-    padding: 20px; 
+    padding: 40px 5%;
+    max-width: 100%;
+    margin: 0 auto;
     display: flex;
     justify-content: center;
+    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .content-card {
-    background-color: white;
+    background-color: #ffffff;
     width: 100%;
-    max-width: 1900px;  
-    border-radius: 15px;
+    border-radius: 24px;
     padding: 40px 50px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+    border: 1px solid #f1f5f9;
+    transition: box-shadow 0.4s ease;
+}
+
+.content-card:hover {
+    box-shadow: 0 15px 40px -10px rgba(2, 132, 199, 0.1);
 }
 
 .content-card h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
     margin-bottom: 30px;
-    color: #000;
+    letter-spacing: -0.5px;
 }
 
 .search-container {
@@ -48,23 +72,70 @@ body {
 
 .status-table {
     width: 100%;
-    border-collapse: collapse; 
+    border-collapse: separate;
+    border-spacing: 0 12px;
 }
 
 .status-table th {
     text-align: left;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #000; 
-    color: #000;
+    padding: 10px 24px 20px 24px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e2e8f0;
 }
 
+.status-table tbody tr {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideUpFade 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.status-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.status-table tbody tr:nth-child(2) { animation-delay: 0.15s; }
+.status-table tbody tr:nth-child(3) { animation-delay: 0.2s; }
+.status-table tbody tr:nth-child(4) { animation-delay: 0.25s; }
+.status-table tbody tr:nth-child(5) { animation-delay: 0.3s; }
+.status-table tbody tr:nth-child(6) { animation-delay: 0.35s; }
+.status-table tbody tr:nth-child(7) { animation-delay: 0.4s; }
+.status-table tbody tr:nth-child(8) { animation-delay: 0.45s; }
+
 .status-table td {
-    padding: 20px 0;
-    font-size: 1.1rem;
-    color: #333;
-    border-bottom: 1px solid #ccc; 
+    padding: 24px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #0f172a;
+    background-color: #f8fafc;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.status-table td:first-child {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    color: #0284c7;
+    font-weight: 800;
+}
+
+.status-table td:last-child {
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.status-table tbody tr:hover td {
+    background-color: #e0f2fe;
+    color: #0284c7;
+    cursor: pointer;
+}
+
+.status-table tbody tr:hover td:first-child {
+    color: #004C82;
+}
+
+.status-table tbody tr:hover {
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 10px 20px -10px rgba(2, 132, 199, 0.2);
 }
 
 .loading-row td {
@@ -79,14 +150,18 @@ body {
     }
     
     .content-card {
-        padding: 20px;
-        overflow-x: auto; 
+        padding: 30px 20px;
+        overflow-x: auto;
+    }
+
+    .status-table {
+        border-spacing: 0 8px;
     }
 
     .status-table th, 
     .status-table td {
-        font-size: 0.9rem;
-        padding: 15px 10px;
-        white-space: nowrap; 
+        font-size: 0.95rem;
+        padding: 16px 16px;
+        white-space: nowrap;
     }
 }
