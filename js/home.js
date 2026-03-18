@@ -13,6 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     loadDashboardStats(token);
+    initHomePageCharts(token);
+
+    const timeRangeSelector = document.getElementById('timeRangeSelector');
+    if (timeRangeSelector) {
+        timeRangeSelector.addEventListener('change', () => {
+            const selectedDays = timeRangeSelector.value;
+            const token = localStorage.getItem('adminToken');
+            
+            let daysValue = 30;
+            if (selectedDays === 'today') daysValue = 1;
+            else if (selectedDays === '7days') daysValue = 7;
+            else if (selectedDays === '30days') daysValue = 30;
+
+            initHomePageCharts(token, daysValue);
+        });
+    }
 });
 
 async function loadDashboardStats(token) {
@@ -48,6 +64,124 @@ async function loadDashboardStats(token) {
     }
 }
 
+let homeTrafficChart = null;
+let homeStatusChart = null;
+
+async function initHomePageCharts(token, days = 30) {
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/reports/summary?days=${days}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) return;
+        const data = await response.json();
+        const { periodAnalytics, rushHourStats } = data;
+
+        const ctxTraffic = document.getElementById('trafficChart');
+        const trafficContainer = ctxTraffic.parentElement;
+        const totalPassengers = rushHourStats.data.reduce((a, b) => a + b, 0);
+
+        if (totalPassengers === 0) {
+            ctxTraffic.style.display = 'none';
+            let msg = trafficContainer.querySelector('.no-data-msg');
+            if (!msg) {
+                msg = document.createElement('div');
+                msg.className = 'no-data-msg';
+                msg.style.cssText = 'height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; font-style: italic;';
+                trafficContainer.appendChild(msg);
+            }
+            msg.textContent = "No traffic data available";
+            msg.style.display = 'flex';
+        } else {
+            ctxTraffic.style.display = 'block';
+            const msg = trafficContainer.querySelector('.no-data-msg');
+            if (msg) msg.style.display = 'none';
+
+            if (homeTrafficChart) homeTrafficChart.destroy();
+            homeTrafficChart = new Chart(ctxTraffic.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: rushHourStats.labels,
+                    datasets: [{
+                        label: 'Passengers',
+                        data: rushHourStats.data,
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        const ctxStatus = document.getElementById('tripStatusChart');
+        const statusContainer = ctxStatus.parentElement;
+        const totalTrips = (periodAnalytics.completedTrips || 0) + (periodAnalytics.cancelledTrips || 0);
+
+        if (totalTrips === 0) {
+            ctxStatus.style.display = 'none';
+            let msg = statusContainer.querySelector('.no-data-msg');
+            if (!msg) {
+                msg = document.createElement('div');
+                msg.className = 'no-data-msg';
+                msg.style.cssText = 'height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.9rem; font-style: italic;';
+                statusContainer.appendChild(msg);
+            }
+            msg.textContent = "No operational data available";
+            msg.style.display = 'flex';
+        } else {
+            ctxStatus.style.display = 'block';
+            const msg = statusContainer.querySelector('.no-data-msg');
+            if (msg) msg.style.display = 'none';
+
+            if (homeStatusChart) homeStatusChart.destroy();
+            homeStatusChart = new Chart(ctxStatus.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Cancelled'],
+                    datasets: [{
+                        data: [periodAnalytics.completedTrips, periodAnalytics.cancelledTrips],
+                        backgroundColor: ['#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        const statsGrid = document.getElementById('performanceStats');
+        statsGrid.innerHTML = `
+            <div class="premium-stat-item">
+                <span class="stat-label">Commenced</span>
+                <div class="stat-val color-dark">${periodAnalytics.totalTrips || 0}</div>
+            </div>
+            <div class="premium-stat-item">
+                <span class="stat-label">Completed</span>
+                <div class="stat-val color-green">${periodAnalytics.completedTrips || 0}</div>
+            </div>
+            <div class="premium-stat-item">
+                <span class="stat-label">Cancelled</span>
+                <div class="stat-val color-amber">${periodAnalytics.cancelledTrips || 0}</div>
+            </div>
+            <div class="premium-stat-item">
+                <span class="stat-label">New Users</span>
+                <div class="stat-val color-sky">${periodAnalytics.newPassengers || 0}</div>
+            </div>
+        `;
+
+    } catch (err) {
+        console.error("Home chart error:", err);
+    }
+}
+
 //Report Generation Modal Logic
 const generateBtn = document.querySelector('.generate-btn');
 const reportModal = document.getElementById('reportModal');
@@ -60,8 +194,8 @@ let peakHoursChartInstance = null;
 
 // Event Listeners for Modal Open/Close
 generateBtn.addEventListener('click', async () => {
-    const days = document.getElementById('date-range').value;
     const daysSelect = document.getElementById('date-range');
+    const days = daysSelect.value;
     const daysText = daysSelect.options[daysSelect.selectedIndex].text;
     const token = localStorage.getItem('adminToken'); 
 
@@ -135,7 +269,7 @@ generateBtn.addEventListener('click', async () => {
         }
 
         document.getElementById('reportDataContainer').innerHTML = `
-            <div style="display: flex; flex-direction: column; gap: 50px; margin-top: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 35px; margin-top: 10px;">
 
                 <div style="width: 100%;">
                     <h4 style="color: #0f172a; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
@@ -151,7 +285,7 @@ generateBtn.addEventListener('click', async () => {
                     ${insightsHTML}
                 </div>
 
-                <div style="width: 100%; height: auto; margin-bottom: 40px; display: flex; flex-direction: column; page-break-inside: avoid; break-inside: avoid;">
+                <div style="width: 100%; height: auto; margin-bottom: 20px; display: flex; flex-direction: column; page-break-inside: avoid; break-inside: avoid;">
                     <h4 style="color: #0f172a; margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
                         <i class="fa-solid fa-bus-simple" style="color: #16a34a;"></i>Operational Performance Summary (${daysText})
                     </h4>
@@ -160,10 +294,10 @@ generateBtn.addEventListener('click', async () => {
                     <p style="text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 10px; font-weight: 600;">Trip Success Distribution</p>
                     
                     <div style="width: 100%; max-width: 320px; margin: 0 auto 20px auto;">
-                        <canvas id="tripStatusChart" style="height: 320px !important;"></canvas>
+                        <canvas id="pdfReportChart" style="height: 320px !important;"></canvas>
                     </div>
 
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                         <tbody>
                             <tr style="border-bottom: 1px solid #f1f5f9;">
                                 <td style="padding: 12px; color: #475569;">Total Trips Commenced</td>
@@ -178,8 +312,8 @@ generateBtn.addEventListener('click', async () => {
                                 <td style="padding: 12px; font-weight: bold; color: #0f172a;; text-align: right;">${periodAnalytics.cancelledTrips}</td>
                             </tr>
                             <tr>
-                                <td style="padding: 60px 12px 10px 12px; font-weight: bold; color: #0f172a;">New Passengers Registered within ${daysText}</td>
-                                <td style="padding: 60px 12px 10px 12px; font-weight: bold; color: #0f172a; text-align: right;">${periodAnalytics.newPassengers}</td>
+                                <td style="padding: 25px 12px 10px 12px; font-weight: bold; color: #0f172a;">New Passengers Registered within ${daysText}</td>
+                                <td style="padding: 25px 12px 10px 12px; font-weight: bold; color: #0f172a; text-align: right;">${periodAnalytics.newPassengers}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,7 +333,7 @@ generateBtn.addEventListener('click', async () => {
                             </tr>
                             <tr style="border-bottom: 1px solid #f1f5f9;">
                                 <td style="padding: 12px; color: #475569;">Total Offline Buses at the moment</td>
-                                <td style="padding: 12px; font-weight: bold; color: color: #0f172a; text-align: right;">${systemSnapshot.offlineBuses}</td>
+                                <td style="padding: 12px; font-weight: bold; color: #0f172a; text-align: right;">${systemSnapshot.offlineBuses}</td>
                             </tr>
                             <tr>
                                 <td style="padding: 12px; color: #475569;">Active Routes at the moment</td>
@@ -246,45 +380,57 @@ generateBtn.addEventListener('click', async () => {
         });
         
         // Trip Status summery (Doughnut Chart)
-        const ctx = document.getElementById('tripStatusChart').getContext('2d');
-        if (reportChartInstance) reportChartInstance.destroy();
+        const ctx = document.getElementById('pdfReportChart');
+        const totalReportTrips = (periodAnalytics.completedTrips || 0) + (periodAnalytics.cancelledTrips || 0);
 
-        reportChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Completed', 'Cancelled'],
-                datasets: [{
-                    data: [periodAnalytics.completedTrips, periodAnalytics.cancelledTrips],
-                    backgroundColor: ['#16a34a', '#dc2626'], 
-                    borderWidth: 2, 
-                    borderColor: '#ffffff'
-                }]
-            },
-            plugins: [ChartDataLabels], 
-            options: {
-                responsive: true,
-                maintainAspectRatio: false, 
-                animation: false,
-                cutout: '60%', 
-                layout: { padding: { top: 25, bottom: 40, left: 20, right: 20 } },
-                plugins: {
-                    legend: { 
-                        position: 'bottom',
-                        padding: { top: 30 }, 
-                        labels: { padding: 20, usePointStyle: true, boxWidth: 10 }
-                    },
-                    datalabels: {
-                        color: '#0f172a', 
-                        font: { weight: 'bold', size: 14 },
-                        anchor: 'end', align: 'end', offset: -2, 
-                        formatter: (value, ctx) => {
-                            let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-                            return (sum === 0 || value === 0) ? '' : Math.round((value * 100) / sum) + "%";
+        if (totalReportTrips === 0) {
+            ctx.style.display = 'none';
+            ctx.parentElement.innerHTML += `
+                <div style="height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; border: 2px dashed #e2e8f0; border-radius: 12px;">
+                    <i class="fa-solid fa-chart-pie" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p style="font-size: 0.9rem;">No data recorded for this timeframe</p>
+                </div>`;
+        } else {
+            ctx.style.display = 'block';
+            if (reportChartInstance) reportChartInstance.destroy();
+
+            reportChartInstance = new Chart(ctx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Cancelled'],
+                    datasets: [{
+                        data: [periodAnalytics.completedTrips, periodAnalytics.cancelledTrips],
+                        backgroundColor: ['#16a34a', '#dc2626'], 
+                        borderWidth: 2, 
+                        borderColor: '#ffffff'
+                    }]
+                },
+                plugins: [ChartDataLabels], 
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    animation: false,
+                    cutout: '60%', 
+                    layout: { padding: { top: 25, bottom: 40, left: 20, right: 20 } },
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            padding: { top: 30 }, 
+                            labels: { padding: 20, usePointStyle: true, boxWidth: 10 }
+                        },
+                        datalabels: {
+                            color: '#0f172a', 
+                            font: { weight: 'bold', size: 14 },
+                            anchor: 'end', align: 'end', offset: -2, 
+                            formatter: (value, ctx) => {
+                                let sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                return (sum === 0 || value === 0) ? '' : Math.round((value * 100) / sum) + "%";
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
     } catch (error) {
         console.error('Error:', error);
