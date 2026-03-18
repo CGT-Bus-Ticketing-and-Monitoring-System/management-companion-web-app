@@ -56,6 +56,20 @@ body {
     letter-spacing: -0.5px;
 }
 
+.search-container {
+    margin-bottom: 25px;
+}
+
+.search-input {
+    padding: 12px; 
+    width: 100%; 
+    max-width: 350px; 
+    border: 1px solid #ccc; 
+    border-radius: 8px; 
+    font-size: 1rem; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
 .status-table {
     width: 100%;
     border-collapse: separate;
@@ -122,6 +136,12 @@ body {
 .status-table tbody tr:hover {
     transform: translateY(-4px) scale(1.005);
     box-shadow: 0 10px 20px -10px rgba(2, 132, 199, 0.2);
+}
+
+.loading-row td {
+    text-align: center; 
+    color: #666; 
+    font-style: italic;
 }
 
 @media (max-width: 768px) {
