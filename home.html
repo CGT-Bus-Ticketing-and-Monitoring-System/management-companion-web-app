@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -17,71 +18,109 @@
     <div id="navbar-placeholder"></div>
 
     <main class="dashboard-container">
-        <h1 id="welcomeText">Dashboard Overview</h1>
+        <div class="dashboard-header animate-fade-in">
+            <h1 id="welcomeText">System Overview</h1>
+        </div>
 
         <div class="stats-grid">
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box active-icon">
-                        <i class="fa-solid fa-bus"></i>
-                    </div>
-                    <h3>Total Active<br>Buses</h3>
+            <div class="stat-card animate-slide-up delay-1">
+                <div class="stat-icon-wrapper bg-sky">
+                    <i class="fa-solid fa-bus"></i>
                 </div>
-                <p class="stat-number" id="activeBusesCount">--</p>
+                <div class="stat-content">
+                    <h3>Active Buses</h3>
+                    <p class="stat-number" id="activeBusesCount">--</p>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box offline-icon icon-wrapper">
-                        <i class="fa-solid fa-bus-simple"></i>
-                        <i class="fa-solid fa-circle-exclamation alert-badge"></i>
-                    </div>
-                    <h3>Total Offline<br>Buses</h3>
+            <div class="stat-card animate-slide-up delay-2">
+                <div class="stat-icon-wrapper bg-amber">
+                    <i class="fa-solid fa-bus-simple"></i>
+                    <span class="alert-dot pulse-animation"></span>
                 </div>
-                <p class="stat-number" id="offlineBusesCount">--</p>
+                <div class="stat-content">
+                    <h3>Offline Buses</h3>
+                    <p class="stat-number" id="offlineBusesCount">--</p>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box users-icon">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <h3>Total Registered<br>Passengers</h3>
+            <div class="stat-card animate-slide-up delay-3">
+                <div class="stat-icon-wrapper bg-green">
+                    <i class="fa-solid fa-user"></i>
                 </div>
-                <p class="stat-number" id="totalPassengersCount">--</p>
+                <div class="stat-content">
+                    <h3>Registered Passengers</h3>
+                    <p class="stat-number" id="totalPassengersCount">--</p>
+                </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="icon-box trips-icon">
-                        <i class="fa-solid fa-suitcase"></i>
-                    </div>
-                    <h3>Trips Commenced<br>Today</h3>
+            <div class="stat-card animate-slide-up delay-4">
+                <div class="stat-icon-wrapper bg-purple">
+                    <i class="fa-solid fa-suitcase"></i>
                 </div>
-                <p class="stat-number" id="tripsTodayCount">--</p>
+                <div class="stat-content">
+                    <h3>Trips Today</h3>
+                    <p class="stat-number" id="tripsTodayCount">--</p>
+                </div>
             </div>
         </div>
 
-        <div class="report-section">
-            <div class="report-info">
-                <div class="icon-box report-icon">
-                    <i class="fa-solid fa-file-pdf"></i>
-                </div>
-                <div>
-                    <h3>Generate System Summary Reports</h3>
-                    <p class="report-subtitle">Download analytics and activity logs</p>
+        <div class="analytics-wrapper animate-slide-up delay-5">
+            <div class="section-header">
+                <h2>Traffic & Performance Analysis</h2>
+                <div class="custom-select-container">
+                    <select id="timeRangeSelector" class="premium-select">
+                        <option value="today">Today</option>
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days" selected>Last 30 Days</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-icon"></i>
                 </div>
             </div>
             
-            <div class="report-actions">
-                <div class="select-wrapper">
-                    <select name="date-range" id="date-range" class="input-field">
+            <div class="charts-layout">
+                <div class="chart-box main-chart">
+                    <h3 class="chart-title">Passenger Traffic Analysis</h3>
+                    <div class="canvas-holder">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-box side-chart">
+                    <h3 class="chart-title">Operational Summary</h3>
+                    <div class="canvas-holder pie-holder">
+                        <canvas id="tripStatusChart"></canvas>
+                    </div>
+                    <div id="performanceStats" class="premium-stats-grid">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-banner animate-slide-up delay-6">
+            <div class="banner-content">
+                <div class="banner-icon bg-sky">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="banner-text">
+                    <h2>Generate System Summary Reports</h2>
+                    <p>Export detailed operational data for administrative review.</p>
+                </div>
+            </div>
+            
+            <div class="banner-controls">
+                <div class="custom-select-container">
+                    <select name="date-range" id="date-range" class="premium-select">
                         <option value="30">Last 30 Days</option>
                         <option value="7">Last 7 Days</option>
                         <option value="1">Today</option>
                     </select>
+                    <i class="fa-solid fa-chevron-down select-icon"></i>
                 </div>
-                <button class="generate-btn"><i class="fa-solid fa-download"></i> Generate</button>
+                <button class="btn-primary generate-btn">
+                    <span>Generate Report</span>
+                    <i class="fa-solid fa-download"></i>
+                </button>
             </div>
         </div>
     </main>
@@ -90,7 +129,7 @@
         <div class="modal-content">            
             <div class="modal-body" id="reportPrintArea">
                 <div class="report-header-info">
-                    <h3 id="reportTitle">Obsidian System Report</h3>
+                    <h2 id="reportTitle">Obsidian System Report</h2>
                     <button id="closeIconBtn" class="close-btn" data-html2canvas-ignore="true">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
@@ -102,22 +141,19 @@
                         <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
                         <p>Fetching report data...</p>
                     </div>
-
+                    
                     <div id="reportContent" style="display: none; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px;">
-                        
-                        <div id="reportTableContainer">
-                            </div>
-
-                        <div style="width: 100%; max-width: 320px; height: 400px; margin: 0 auto; position: relative; display: block;">
-                            <canvas id="tripStatusChart"></canvas>
+                        <div id="reportTableContainer"></div>
+                        <div style="width: 100%; max-width: 320px; height: 320px; margin: 0 auto;">
+                            <canvas id="pdfReportChart"></canvas>
                         </div>
-
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button id="downloadPdfBtn" class="generate-btn"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+                <button id="downloadPdfBtn" class="btn-primary" style="height: 45px; padding: 0 20px;">
+                    <i class="fa-solid fa-file-pdf"></i> Download PDF
+                </button>
             </div>
         </div>
     </div>
