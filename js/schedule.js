@@ -4,13 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
 
     if (!token) {
-        window.location.replace('index.html');
+        Swal.fire({
+            title: 'Unauthorized',
+            text: 'You must be logged in to view this page.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        }).then(() => {
+            window.location.replace('index.html');
+        });
         return; 
     }
 
     loadDropdownOptions(token);
 });
-
 // Fetches the Routes and Buses from the database to populate the top dropdowns
 async function loadDropdownOptions(token) {
     try {
@@ -42,10 +49,16 @@ async function loadDropdownOptions(token) {
         }
 
     } catch (error) {
-        console.error('Error loading dropdown data:', error);
+        console.error(error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to load dropdown options.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 }
-
 // Helper function to ensure BOTH a route and a bus are selected before searching
 function checkAndLoadSchedules() {
     const token = localStorage.getItem('adminToken');
@@ -64,7 +77,6 @@ function checkAndLoadSchedules() {
 
     loadSchedules(routeId, busId, token);
 }
-
 // Fetches schedules from the database and builds the HTML table rows
 async function loadSchedules(routeId, busId, token) {
     const tbody = document.getElementById('scheduleTableBody');
@@ -93,17 +105,17 @@ async function loadSchedules(routeId, busId, token) {
                 <td>${sched.direction}</td>
                 <td>${sched.status}</td>
                 <td class="action-icons">
-                    <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; margin-right: 10px;" onclick="editSchedule(${sched.schedule_id})"></i>
+                    <i class="fa-solid fa-pen-to-square icon-edit"  style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" onclick="editSchedule(${sched.schedule_id})"></i>
                     <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: red;" onclick="deleteSchedule(${sched.schedule_id})"></i>
                 </td>
             `;
             tbody.appendChild(tr);
         });
     } catch (error) {
+        console.error(error);
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Error loading data.</td></tr>';
     }
 }
-
 // Fired when the "Edit" pencil icon is clicked in the table
 window.editSchedule = function(scheduleId) {
     const schedule = currentSchedules.find(s => s.schedule_id === scheduleId);
@@ -117,12 +129,20 @@ window.editSchedule = function(scheduleId) {
     document.getElementById('editScheduleSection').style.display = 'block';
     document.getElementById('editScheduleSection').scrollIntoView({ behavior: 'smooth' });
 };
-
 // Fired when the "Delete" trash icon is clicked in the table
 window.deleteSchedule = async function(scheduleId) {
-    if (!confirm('Are you sure you want to delete this schedule?')) {
-        return; 
-    }
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to delete this schedule?",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!confirmation.isConfirmed) return;
 
     const token = localStorage.getItem('adminToken');
     try {
@@ -132,23 +152,40 @@ window.deleteSchedule = async function(scheduleId) {
         });
 
         if (response.ok) {
-            alert('Schedule deleted!');
+            Swal.fire({
+                title: 'Deleted!',
+                text: 'Schedule deleted successfully!',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
             const currentRouteId = document.getElementById('routeSelect').value;
             const currentBusId = document.getElementById('busSelect').value;
 
             loadSchedules(currentRouteId, currentBusId, token);
         } else {
-            alert('Failed to delete schedule.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to delete schedule.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
         }
     } catch (error) {
-        console.error('Error deleting schedule:', error);
+        console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 };
-
 // Listen for Dropdown Changes
 document.getElementById('routeSelect').addEventListener('change', checkAndLoadSchedules);
 document.getElementById('busSelect').addEventListener('change', checkAndLoadSchedules);
-
 // Listen for the "Add Schedule" Form Submission
 document.getElementById('addScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -158,16 +195,35 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
     const routeId = document.getElementById('routeSelect').value; 
 
     if (!busId || !routeId) {
-        alert('Please select both a Route and a Bus from the top section first!');
-        return;
+        return Swal.fire({
+            title: 'Validation Error',
+            text: 'Please select both a Route and a Bus from the top section first!',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+
+    const departure_time = document.getElementById('addDeparture').value.trim();
+    const arrival_time = document.getElementById('addArrival').value.trim();
+    const direction = document.getElementById('addDirection').value.trim();
+
+    if (!departure_time || !arrival_time || !direction) {
+        return Swal.fire({
+            title: 'Validation Error',
+            text: 'Please fill in all schedule details.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 
     const scheduleData = {
         bus_id: busId,
         route_id: routeId, 
-        departure_time: document.getElementById('addDeparture').value,
-        arrival_time: document.getElementById('addArrival').value,
-        direction: document.getElementById('addDirection').value,
+        departure_time: departure_time,
+        arrival_time: arrival_time,
+        direction: direction,
         status: 'ACTIVE' 
     };
 
@@ -182,17 +238,35 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
         });
 
         if (response.ok) {
-            alert('Schedule added successfully!');
+            Swal.fire({
+                title: 'Success!',
+                text: 'Schedule added successfully!',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
             document.getElementById('addScheduleForm').reset();
             loadSchedules(routeId, busId, token);
         } else {
-            alert('Failed to add schedule.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to add schedule.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 });
-
 // Listen for the "Edit Schedule" Form Submission
 document.getElementById('editScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -202,10 +276,24 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
     const currentRouteId = document.getElementById('routeSelect').value;
     const currentBusId = document.getElementById('busSelect').value;
 
+    const departure_time = document.getElementById('editDeparture').value.trim();
+    const arrival_time = document.getElementById('editArrival').value.trim();
+    const direction = document.getElementById('editDirection').value.trim();
+
+    if (!departure_time || !arrival_time || !direction) {
+        return Swal.fire({
+            title: 'Validation Error',
+            text: 'Please fill in all schedule details.',
+            icon: 'warning',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+
     const updatedData = {
-        departure_time: document.getElementById('editDeparture').value,
-        arrival_time: document.getElementById('editArrival').value,
-        direction: document.getElementById('editDirection').value
+        departure_time: departure_time,
+        arrival_time: arrival_time,
+        direction: direction
     };
 
     try {
@@ -219,17 +307,35 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
         });
 
         if (response.ok) {
-            alert('Schedule updated successfully!');
+            Swal.fire({
+                title: 'Success!',
+                text: 'Schedule updated successfully!',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
             document.getElementById('editScheduleSection').style.display = 'none';
             loadSchedules(currentRouteId, currentBusId, token);
         } else {
-            alert('Failed to update schedule.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to update schedule.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
         }
     } catch (error) {
-        console.error('Error updating schedule:', error);
+        console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
     }
 });
-
 // Listen for the "Cancel" button on the Edit Form
 document.getElementById('cancelEditBtn').addEventListener('click', () => {
     document.getElementById('editScheduleForm').reset();
