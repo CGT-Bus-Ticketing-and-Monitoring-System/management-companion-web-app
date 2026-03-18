@@ -334,7 +334,7 @@ body {
 }
 
 .btn-primary {
-    background-color: #2E94D4;
+    background-color: #004C82;
     color: #ffffff;
     border: none;
     border-radius: 16px;
@@ -355,7 +355,7 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #004C82;
+    background-color: #003255;
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(32, 138, 251, 0.3);
 }
@@ -442,7 +442,7 @@ body {
     cursor: pointer;
 }
 
-.close-btn:hover { color: #ef4444; }
+.close-btn:hover { color: #646b75; }
 
 .modal-footer {
     padding: 20px 30px;

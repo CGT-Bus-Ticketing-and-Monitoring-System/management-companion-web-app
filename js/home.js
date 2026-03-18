@@ -78,6 +78,7 @@ async function initHomePageCharts(token, days = 30) {
         const data = await response.json();
         const { periodAnalytics, rushHourStats } = data;
 
+        // Line Chart (Passenger Traffic)
         const ctxTraffic = document.getElementById('trafficChart');
         const trafficContainer = ctxTraffic.parentElement;
         const totalPassengers = rushHourStats.data.reduce((a, b) => a + b, 0);
@@ -113,10 +114,26 @@ async function initHomePageCharts(token, days = 30) {
                         pointRadius: 3
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    animation: {
+                        y: {
+                            duration: 2000,
+                            delay: 300, 
+                            easing: 'easeOut' 
+                        },
+                        colors: {
+                            type: 'color',
+                            duration: 1000,
+                            from: 'transparent' 
+                        }
+                    }
+                }
             });
         }
 
+        // Doughnut Chart (Operational Status)
         const ctxStatus = document.getElementById('tripStatusChart');
         const statusContainer = ctxStatus.parentElement;
         const totalTrips = (periodAnalytics.completedTrips || 0) + (periodAnalytics.cancelledTrips || 0);
@@ -138,12 +155,13 @@ async function initHomePageCharts(token, days = 30) {
             if (msg) msg.style.display = 'none';
 
             if (homeStatusChart) homeStatusChart.destroy();
+
             homeStatusChart = new Chart(ctxStatus.getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: ['Completed', 'Cancelled'],
                     datasets: [{
-                        data: [periodAnalytics.completedTrips, periodAnalytics.cancelledTrips],
+                        data: [0, 0],
                         backgroundColor: ['#10b981', '#f59e0b'],
                         borderWidth: 0
                     }]
@@ -152,9 +170,20 @@ async function initHomePageCharts(token, days = 30) {
                     responsive: true,
                     maintainAspectRatio: false,
                     cutout: '70%',
-                    plugins: { legend: { display: false } }
+                    plugins: { legend: { display: false } },
+                    animation: {
+                        duration: 1500, 
+                        easing: 'easeOut' 
+                    }
                 }
             });
+            setTimeout(() => {
+                homeStatusChart.data.datasets[0].data = [
+                    periodAnalytics.completedTrips, 
+                    periodAnalytics.cancelledTrips
+                ];
+                homeStatusChart.update(); 
+            }, 600); 
         }
 
         const statsGrid = document.getElementById('performanceStats');
@@ -400,7 +429,7 @@ generateBtn.addEventListener('click', async () => {
                     labels: ['Completed', 'Cancelled'],
                     datasets: [{
                         data: [periodAnalytics.completedTrips, periodAnalytics.cancelledTrips],
-                        backgroundColor: ['#16a34a', '#dc2626'], 
+                        backgroundColor: ['#26a264', '#c43737'], 
                         borderWidth: 2, 
                         borderColor: '#ffffff'
                     }]
