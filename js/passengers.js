@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         confirmButtonColor: '#004C82'
                     });
                     editForm.reset();
+                    document.getElementById('editPassengerSection').style.display = 'none';
                     loadPassengers();
                     document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -349,6 +350,9 @@ window.setupEdit = function(id, fname, lname, username, email, phone, balance) {
     document.getElementById('editPhone').value = (phone !== 'null' && phone !== 'undefined') ? phone : '';
     document.getElementById('editBalance').value = balance;
     document.getElementById('editPassword').value = ''; 
+
+    const editSection = document.getElementById('editPassengerSection');
+    editSection.style.display = 'block';    
     document.getElementById('editPassengerForm').scrollIntoView({ behavior: 'smooth' });
 };
 
@@ -403,3 +407,8 @@ window.deactivatePassenger = async function(id) {
         });
     }
 };
+
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+    document.getElementById('editPassengerForm').reset();
+    document.getElementById('editPassengerSection').style.display = 'none';
+});
