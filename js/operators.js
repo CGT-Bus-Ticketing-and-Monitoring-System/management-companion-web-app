@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         confirmButtonColor: '#004C82'
                     });
                     editForm.reset();
-                    getElementById('editOperatorSection').style.display = 'none';
+                    document.getElementById('editOperatorSection').style.display = 'none';
                     loadOperators();
                     document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
                 } else {

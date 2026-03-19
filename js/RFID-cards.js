@@ -23,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const searchTerm = e.target.value.toLowerCase().trim();
             
             const filteredCards = allCards.filter(card => {
-                return card.rfid_uid.toLowerCase().includes(searchTerm) || 
-                       card.status.toLowerCase().includes(searchTerm) ||
-                       card.passenger_name.toLowerCase().includes(searchTerm);
+                return card.rfid_uid && card.rfid_uid.toLowerCase().includes(searchTerm);
             });
             
             renderTable(filteredCards);

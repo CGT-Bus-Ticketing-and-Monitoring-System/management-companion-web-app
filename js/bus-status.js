@@ -95,8 +95,9 @@ async function loadBusStatus(token) {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${bus.registration_number || 'N/A'}</strong></td>
-                    <td>${bus.bus_name || 'N/A'}</td>
                     <td><span style="background: #333; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.9rem;">${bus.route_code || 'Unassigned'}</span></td>
+                    <td>${bus.start_location || 'N/A'}</td>
+                    <td>${bus.end_location || 'N/A'}</td>
                     <td>${gpsTime}</td>
                     <td>${bus.passenger_count || 0}</td>
                 `;
