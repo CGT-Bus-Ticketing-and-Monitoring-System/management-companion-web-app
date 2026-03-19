@@ -1,4 +1,5 @@
 let currentSchedules = [];
+let allBuses = []; 
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
@@ -18,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadDropdownOptions(token);
 });
-// Fetches the Routes and Buses from the database to populate the top dropdowns
+
+// Fetches the Routes and Buses from the database
 async function loadDropdownOptions(token) {
     try {
         const routeResponse = await fetch(`${CONFIG.API_BASE_URL}/routes`, {
@@ -39,13 +41,10 @@ async function loadDropdownOptions(token) {
         });
 
         if (busResponse.ok) {
-            const buses = await busResponse.json();
+            allBuses = await busResponse.json(); // Store all buses in memory
             const busSelect = document.getElementById('busSelect');
-            busSelect.innerHTML = '<option value="" disabled selected>Select Bus</option>';
-            buses.forEach(bus => {
-                const displayName = bus.bus_name ? bus.bus_name : `Bus ID: ${bus.bus_id}`;
-                busSelect.innerHTML += `<option value="${bus.bus_id}">${displayName}</option>`;
-            });
+            // Tell user to select route first
+            busSelect.innerHTML = '<option value="" disabled selected>Select a Route First</option>'; 
         }
 
     } catch (error) {
@@ -59,53 +58,64 @@ async function loadDropdownOptions(token) {
         });
     }
 }
-// Helper function to ensure BOTH a route and a bus are selected before searching
-function checkAndLoadSchedules() {
+
+// When Route is selected: Filter buses dropdown AND load the table
+document.getElementById('routeSelect').addEventListener('change', () => {
     const token = localStorage.getItem('adminToken');
     const routeId = document.getElementById('routeSelect').value;
-    const busId = document.getElementById('busSelect').value;
-    const tbody = document.getElementById('scheduleTableBody');
+    
+    if (routeId) {
+        // 1. Filter the Bus Dropdown based on the selected route
+        const busSelect = document.getElementById('busSelect');
+        busSelect.innerHTML = '<option value="" disabled selected>Select Bus for New Schedule</option>';
+        
+        const filteredBuses = allBuses.filter(bus => bus.route_id == routeId);
+        
+        if (filteredBuses.length === 0) {
+            busSelect.innerHTML += `<option value="" disabled>No buses assigned to this route</option>`;
+        } else {
+            filteredBuses.forEach(bus => {
+                busSelect.innerHTML += `<option value="${bus.bus_id}">${bus.registration_number}</option>`;
+            });
+        }
 
-    if (!routeId) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #666;">Please select a route to view its schedule.</td></tr>';
-        return;
+        // 2. Load the Schedule Table
+        loadSchedules(routeId, token);
     }
-    if (!busId) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #666;">Please select a bus to view its schedule.</td></tr>';
-        return;
-    }
+});
 
-    loadSchedules(routeId, busId, token);
-}
-// Fetches schedules from the database and builds the HTML table rows
-async function loadSchedules(routeId, busId, token) {
+// Fetches schedules from the database by Route ID
+async function loadSchedules(routeId, token) {
     const tbody = document.getElementById('scheduleTableBody');
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading schedules...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading schedules...</td></tr>';
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/${routeId}/${busId}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/route/${routeId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
+        if (!response.ok) throw new Error('Failed to fetch schedules');
+
         currentSchedules = await response.json(); 
         const schedules = currentSchedules;
 
         tbody.innerHTML = '';
 
         if (schedules.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No schedules found for this route and bus.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No schedules found for this route.</td></tr>';
             return;
         }
 
         schedules.forEach(sched => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
+                <td style="font-weight: bold; color: #004C82;">${sched.registration_number || 'Unknown'}</td>
                 <td>${sched.departure_time}</td>
                 <td>${sched.arrival_time}</td>
                 <td>${sched.direction}</td>
                 <td>${sched.status}</td>
                 <td class="action-icons">
-                    <i class="fa-solid fa-pen-to-square icon-edit"  style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" onclick="editSchedule(${sched.schedule_id})"></i>
+                    <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" onclick="editSchedule(${sched.schedule_id})"></i>
                     <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: red;" onclick="deleteSchedule(${sched.schedule_id})"></i>
                 </td>
             `;
@@ -113,9 +123,10 @@ async function loadSchedules(routeId, busId, token) {
         });
     } catch (error) {
         console.error(error);
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Error loading data.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error loading data.</td></tr>';
     }
 }
+
 // Fired when the "Edit" pencil icon is clicked in the table
 window.editSchedule = function(scheduleId) {
     const schedule = currentSchedules.find(s => s.schedule_id === scheduleId);
@@ -129,6 +140,7 @@ window.editSchedule = function(scheduleId) {
     document.getElementById('editScheduleSection').style.display = 'block';
     document.getElementById('editScheduleSection').scrollIntoView({ behavior: 'smooth' });
 };
+
 // Fired when the "Delete" trash icon is clicked in the table
 window.deleteSchedule = async function(scheduleId) {
     const confirmation = await Swal.fire({
@@ -160,9 +172,7 @@ window.deleteSchedule = async function(scheduleId) {
                 confirmButtonColor: '#004C82'
             });
             const currentRouteId = document.getElementById('routeSelect').value;
-            const currentBusId = document.getElementById('busSelect').value;
-
-            loadSchedules(currentRouteId, currentBusId, token);
+            loadSchedules(currentRouteId, token);
         } else {
             Swal.fire({
                 title: 'Error',
@@ -183,9 +193,7 @@ window.deleteSchedule = async function(scheduleId) {
         });
     }
 };
-// Listen for Dropdown Changes
-document.getElementById('routeSelect').addEventListener('change', checkAndLoadSchedules);
-document.getElementById('busSelect').addEventListener('change', checkAndLoadSchedules);
+
 // Listen for the "Add Schedule" Form Submission
 document.getElementById('addScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -246,7 +254,7 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
                 confirmButtonColor: '#004C82'
             });
             document.getElementById('addScheduleForm').reset();
-            loadSchedules(routeId, busId, token);
+            loadSchedules(routeId, token);
         } else {
             Swal.fire({
                 title: 'Error',
@@ -267,6 +275,7 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
         });
     }
 });
+
 // Listen for the "Edit Schedule" Form Submission
 document.getElementById('editScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -274,7 +283,6 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
     
     const scheduleId = document.getElementById('editScheduleId').value;
     const currentRouteId = document.getElementById('routeSelect').value;
-    const currentBusId = document.getElementById('busSelect').value;
 
     const departure_time = document.getElementById('editDeparture').value.trim();
     const arrival_time = document.getElementById('editArrival').value.trim();
@@ -315,7 +323,7 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
                 confirmButtonColor: '#004C82'
             });
             document.getElementById('editScheduleSection').style.display = 'none';
-            loadSchedules(currentRouteId, currentBusId, token);
+            loadSchedules(currentRouteId, token);
         } else {
             Swal.fire({
                 title: 'Error',
@@ -336,6 +344,7 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
         });
     }
 });
+
 // Listen for the "Cancel" button on the Edit Form
 document.getElementById('cancelEditBtn').addEventListener('click', () => {
     document.getElementById('editScheduleForm').reset();
