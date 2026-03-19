@@ -12,6 +12,7 @@ body {
     color: #0f172a;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    zoom: 0.85;
 }
 
 .dashboard-container {

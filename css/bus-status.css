@@ -12,6 +12,7 @@ body {
     color: #0f172a;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+    zoom: 0.85;
 }
 
 @keyframes slideUpFade {
