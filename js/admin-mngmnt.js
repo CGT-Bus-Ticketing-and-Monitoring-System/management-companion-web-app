@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const editForm = document.getElementById('editForm');
+    const editForm = document.getElementById('editAdminForm');
     if (editForm) {
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     editForm.reset();
                     currentEditAdminId = null; 
-                    getElementById('editAdminSection').style.display = 'none';
+                    document.getElementById('editAdminSection').style.display = 'none';
                     loadAdmins();
                     document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -225,18 +225,18 @@ async function loadAdmins() {
 window.setupEdit = function(id, fname, lname, username, email, phone) {
     currentEditAdminId = id; 
     
-    document.getElementById('editFname').value = fname;
-    document.getElementById('editLname').value = lname;
+    document.getElementById('editFname').value = fname !== 'null' && fname !== 'undefined' ? fname : '';
+    document.getElementById('editLname').value = lname !== 'null' && lname !== 'undefined' ? lname : '';
     document.getElementById('editUsername').value = username;
     document.getElementById('editEmail').value = email;
-    document.getElementById('editPhone').value = phone;
+
+    document.getElementById('editPhone').value = (phone !== 'null' && phone !== 'undefined') ? phone : '';
     document.getElementById('editPassword').value = ''; 
 
     const editSection = document.getElementById('editAdminSection');
     editSection.style.display = 'block';    
     document.getElementById('editAdminForm').scrollIntoView({ behavior: 'smooth' });
 };
-
 window.deactivateAdmin = function(id) {
     Swal.fire({
         title: 'Are you sure?',
