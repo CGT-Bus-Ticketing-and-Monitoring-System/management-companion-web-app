@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadDropdownOptions(token);
 });
+
 // Fetches the Routes and Buses from the database to populate the top dropdowns
 async function loadDropdownOptions(token) {
     try {
@@ -59,6 +60,7 @@ async function loadDropdownOptions(token) {
         });
     }
 }
+
 // Helper function to ensure BOTH a route and a bus are selected before searching
 function checkAndLoadSchedules() {
     const token = localStorage.getItem('adminToken');
@@ -77,6 +79,7 @@ function checkAndLoadSchedules() {
 
     loadSchedules(routeId, busId, token);
 }
+
 // Fetches schedules from the database and builds the HTML table rows
 async function loadSchedules(routeId, busId, token) {
     const tbody = document.getElementById('scheduleTableBody');
@@ -116,6 +119,7 @@ async function loadSchedules(routeId, busId, token) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: red;">Error loading data.</td></tr>';
     }
 }
+
 // Fired when the "Edit" pencil icon is clicked in the table
 window.editSchedule = function(scheduleId) {
     const schedule = currentSchedules.find(s => s.schedule_id === scheduleId);
@@ -129,6 +133,7 @@ window.editSchedule = function(scheduleId) {
     document.getElementById('editScheduleSection').style.display = 'block';
     document.getElementById('editScheduleSection').scrollIntoView({ behavior: 'smooth' });
 };
+
 // Fired when the "Delete" trash icon is clicked in the table
 window.deleteSchedule = async function(scheduleId) {
     const confirmation = await Swal.fire({
@@ -183,9 +188,11 @@ window.deleteSchedule = async function(scheduleId) {
         });
     }
 };
+
 // Listen for Dropdown Changes
 document.getElementById('routeSelect').addEventListener('change', checkAndLoadSchedules);
 document.getElementById('busSelect').addEventListener('change', checkAndLoadSchedules);
+
 // Listen for the "Add Schedule" Form Submission
 document.getElementById('addScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -267,6 +274,7 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
         });
     }
 });
+
 // Listen for the "Edit Schedule" Form Submission
 document.getElementById('editScheduleForm').addEventListener('submit', async (e) => {
     e.preventDefault();

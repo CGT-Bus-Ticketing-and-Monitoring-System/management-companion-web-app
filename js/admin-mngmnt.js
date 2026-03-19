@@ -154,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     editForm.reset();
                     currentEditAdminId = null; 
+                    getElementById('editAdminSection').style.display = 'none';
                     loadAdmins();
                     document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -231,7 +232,9 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     document.getElementById('editPhone').value = phone;
     document.getElementById('editPassword').value = ''; 
 
-    document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
+    const editSection = document.getElementById('editAdminSection');
+    editSection.style.display = 'block';    
+    document.getElementById('editAdminForm').scrollIntoView({ behavior: 'smooth' });
 };
 
 window.deactivateAdmin = function(id) {
@@ -285,3 +288,8 @@ window.deactivateAdmin = function(id) {
         }
     });
 };
+
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+    document.getElementById('editAdminForm').reset();
+    document.getElementById('editAdminSection').style.display = 'none';
+});

@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         confirmButtonColor: '#004C82'
                     });
                     editForm.reset();
+                    getElementById('editOperatorSection').style.display = 'none';
                     loadOperators();
                     document.querySelector('.table-container').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -213,7 +214,9 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     document.getElementById('editEmail').value = email;
     document.getElementById('editPhone').value = (phone !== 'null' && phone !== 'undefined') ? phone : '';
     document.getElementById('editPassword').value = '';
-    
+
+    const editSection = document.getElementById('editOperatorSection');
+    editSection.style.display = 'block';    
     document.getElementById('editOperatorForm').scrollIntoView({ behavior: 'smooth' });
 };
 
@@ -270,3 +273,8 @@ window.deactivateOperator = function(id) {
         }
     });
 };
+
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+    document.getElementById('editOperatorForm').reset();
+    document.getElementById('editOperatorSection').style.display = 'none';
+});

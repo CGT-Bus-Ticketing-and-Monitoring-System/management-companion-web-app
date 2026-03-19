@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         iconColor: '#004C82',
                         confirmButtonColor: '#004C82'
                     });
+                    document.getElementById('editRouteSection').style.display = 'none';
                     loadRoutes();
                     document.querySelector('.table-responsive').scrollIntoView({ behavior: 'smooth' });
                 } else {
@@ -315,5 +316,12 @@ window.setupEdit = function(id, start, end, fare) {
     document.getElementById('editEnd').value = end;
     document.getElementById('editFare').value = fare;
 
-    document.getElementById('editRouteForm').scrollIntoView({ behavior: 'smooth' });
+    const editSection = document.getElementById('editRouteSection');
+    editSection.style.display = 'block';    
+    editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
+
+document.getElementById('cancelEditBtn').addEventListener('click', () => {
+    document.getElementById('editRouteForm').reset();
+    document.getElementById('editRouteSection').style.display = 'none';
+});
