@@ -476,25 +476,37 @@ downloadPdfBtn.addEventListener('click', async () => {
         margin: [0.5, 0.5, 0.5, 0.5], 
         filename: `Obsidian_Full_Report_${daysText}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, 
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true, 
+            scrollY: 0,
+            letterRendering: true 
+        }, 
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
 
     const originalText = downloadPdfBtn.innerHTML;
     downloadPdfBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
-    
+
+    const originalZoom = document.body.style.zoom || "0.85"; 
+
     try {
+        document.body.style.zoom = "1";
+
         element.style.height = 'auto';
         element.style.overflow = 'visible';
-  
-        await new Promise(resolve => setTimeout(resolve, 500));
+
+        await new Promise(resolve => setTimeout(resolve, 800));
         await html2pdf().set(opt).from(element).save();
 
+        document.body.style.zoom = originalZoom;
         element.style.height = '';
         element.style.overflow = 'auto';
         downloadPdfBtn.innerHTML = originalText;
     } catch (error) {
         console.error('PDF Error:', error);
+
+        document.body.style.zoom = originalZoom; 
         downloadPdfBtn.innerHTML = originalText; 
         element.style.height = '';
         element.style.overflow = 'auto';

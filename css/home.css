@@ -437,14 +437,20 @@ body {
 
 .close-btn {
     position: absolute;
-    top: 0; right: 0;
-    background: none; border: none;
-    color: #94a3b8; font-size: 1.5rem;
+    top: 0px;
+    right: 10px;
+    background: transparent !important;
+    border: none !important;
+    color: #64748b !important;
+    font-size: 1.8rem !important;
     cursor: pointer;
+    z-index: 9999;
+    display: block !important;
 }
 
-.close-btn:hover { color: #646b75; }
-
+.close-btn:hover {
+    color: #464a50 !important;
+}
 .modal-footer {
     padding: 20px 30px;
     background-color: #f8fafc;
@@ -452,3 +458,4 @@ body {
     display: flex;
     justify-content: flex-end; 
 }
+
