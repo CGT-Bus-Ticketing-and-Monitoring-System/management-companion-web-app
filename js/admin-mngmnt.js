@@ -218,7 +218,8 @@ async function loadAdmins() {
             tbody.innerHTML += row;
         });
     } catch (error) {
-        console.error('Error loading admins:', error);
+        console.error('Network Error:', error);
+        document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 

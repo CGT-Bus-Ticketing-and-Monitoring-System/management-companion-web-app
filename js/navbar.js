@@ -34,13 +34,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
+            logoutBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 
-                if (confirm("Are you sure you want to log out?")) {
+                const confirmation = await Swal.fire({
+                    title: 'Confirm Logout',
+                    text: 'Are you sure you want to securely log out of the system?',
+                    icon: 'question',
+                    iconColor: '#004C82',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#004C82',
+                    confirmButtonText: 'Yes, log out',
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (confirmation.isConfirmed) {
                     localStorage.removeItem('adminToken');
                     localStorage.removeItem('adminFName');
-                    window.location.href = 'index.html';
+                    localStorage.removeItem('authToken'); 
+                    localStorage.removeItem('userRole'); 
+
+                    window.location.replace('index.html');
                 }
             });
         }

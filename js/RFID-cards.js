@@ -107,14 +107,8 @@ async function loadCards() {
         renderTable(allCards);
         
     } catch (error) {
-        console.error('Error loading cards:', error);
-        Swal.fire({
-            title: 'Error',
-            text: 'Failed to load cards.',
-            icon: 'error',
-            iconColor: '#004C82',
-            confirmButtonColor: '#004C82'
-        });
+        console.error('Network Error:', error);
+        document.getElementById('cardsTableBody').innerHTML = '<tr class="loading-row"><td colspan="5" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 

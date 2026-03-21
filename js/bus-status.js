@@ -109,6 +109,6 @@ async function loadBusStatus(token) {
 
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('busStatusTableBody').innerHTML = '<tr class="loading-row"><td colspan="5" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        document.getElementById('busStatusTableBody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
