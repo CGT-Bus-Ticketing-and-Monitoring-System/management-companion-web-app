@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = { route_code, start_location, end_location, base_fare };
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/routes/create`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/create`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/routes/assign-bus`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/assign-bus`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ route_id: routeId, bus_reg_no: busReg })
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = { start_location, end_location, base_fare };
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/routes/update/${id}`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/update/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadRoutes() {
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/routes`);
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes`);
         const routes = await res.json();
         
         const tbody = document.querySelector('.routes-table tbody');
@@ -237,7 +237,7 @@ async function loadRoutes() {
 
 async function loadAssignmentDropdowns() {
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/assignment-data`);
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/assignment-data`);
         const data = await res.json();
 
         const routeSelect = document.getElementById('assignRouteSelect');
@@ -273,7 +273,7 @@ window.deactivateRoute = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/deactivate/${id}`, { method: 'PUT' });
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/deactivate/${id}`, { method: 'PUT' });
         if (res.ok) {
             Swal.fire({
                 title: 'Deactivated!',
@@ -319,7 +319,7 @@ window.activateRoute = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/activate/${id}`, { method: 'PUT' });
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/activate/${id}`, { method: 'PUT' });
         if (res.ok) {
             Swal.fire({
                 title: 'Activated!',
@@ -381,7 +381,7 @@ window.deleteRoute = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/${id}`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/routes/${id}`, {
             method: 'DELETE'
         });
 

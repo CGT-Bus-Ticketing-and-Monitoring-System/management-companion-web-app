@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Fetches the Routes and Buses from the database
 async function loadDropdownOptions(token) {
     try {
-        const routeResponse = await fetch(`${CONFIG.API_BASE_URL}/routes`, {
+        const routeResponse = await fetch(`${CONFIG.API_BASE_URL}/admin/routes`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -36,7 +36,7 @@ async function loadDropdownOptions(token) {
             });
         }
 
-        const busResponse = await fetch(`${CONFIG.API_BASE_URL}/buses`, {
+        const busResponse = await fetch(`${CONFIG.API_BASE_URL}/admin/buses`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -92,7 +92,7 @@ async function loadSchedules(routeId, token) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading schedules...</td></tr>';
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/route/${routeId}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/schedules/route/${routeId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -181,7 +181,7 @@ window.updateScheduleStatus = async function(scheduleId, newStatus) {
 
     const token = localStorage.getItem('adminToken');
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/status/${scheduleId}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/schedules/status/${scheduleId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ window.deleteSchedule = async function(scheduleId) {
 
     const token = localStorage.getItem('adminToken');
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/${scheduleId}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/schedules/${scheduleId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -335,7 +335,7 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
     };
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/schedules`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -423,7 +423,7 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
     };
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/${scheduleId}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/schedules/${scheduleId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

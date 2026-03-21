@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Function to fetch and display bus status data
 async function loadBusStatus(token) {
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/bus-status`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/bus-status`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

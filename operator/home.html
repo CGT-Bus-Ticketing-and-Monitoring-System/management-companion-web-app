@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operator Dashboard</title>
+
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body data-active-page="home">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="dashboard-container">
+        <h1 id="welcome-name">Welcome, Operator</h1>
+
+        <div class="stats-grid">
+            <div class="bus-operator-card">
+                <div class="card-top">
+                    <i class="fa-solid fa-bus"></i>
+                    <h3>Total Owned<br>Buses</h3>
+                </div>
+                <p class="stat-number" id="total-buses">0</p> 
+            </div>
+
+            <div class="bus-operator-card">
+                <div class="card-top">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <h3 id="earnings-card-title">Today<br>Earnings</h3>
+                </div>
+                <p class="stat-number" id="earnings-display">LKR 0</p>
+            </div>
+
+            <div class="bus-operator-card">
+                <div class="card-top">
+                    <i class="fa-solid fa-bus"></i>
+                    <h3>Active Buses</h3>
+                </div>
+                <p class="stat-number" id="active-buses">0</p>
+            </div>
+
+            <div class="bus-operator-card">
+                <div class="card-top">
+                    <div class="icon-wrapper">
+                        <i class="fa-solid fa-bus-simple"></i>
+                        <i class="fa-solid fa-circle-exclamation alert-badge"></i>
+                    </div>
+                    <h3>Inactive Buses</h3>
+                </div>
+                <p class="stat-number" id="inactive-buses">0</p>
+            </div>
+        </div>
+      <div class="section-header">
+                <h2>Traffic & Performance Analysis</h2>
+                <div class="custom-select-container">
+                    <select id="timeRangeSelector" class="premium-select">
+                        <option value="today">Today</option>
+                        <option value="7days">Last 7 Days</option>
+                        <option value="30days" selected>Last 30 Days</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                </div>
+            </div>
+        <div class="dashboard-middle-section">
+            <div class="content-card chart-container">
+                <h2>Passenger Trend</h2>
+                <div class="canvas-holder">
+                    <canvas id="passengerTrendChart"></canvas>
+                </div>
+            </div>
+
+  <div class="content-card table-container">
+    
+                <div class="table-header-container">
+                    <h2>Recent Fleet Activity</h2>
+                    <button id="viewAllFleetBtn" class="view-all-link" style="display: none;">
+                        View All <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Bus Reg</th>
+                                <th>Route</th>
+                                <th>Status</th>
+                                <th>Earned</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentActivityBody">
+                            <tr><td colspan="4" style="text-align:center;">Loading activity...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-banner animate-slide-up">
+            <div class="banner-content">
+                <div class="banner-icon bg-sky">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div class="banner-text">
+                    <h2>Generate Financial & Operational Reports</h2>
+                    <p>Export your fleet's detailed performance and earnings data.</p>
+                </div>
+            </div>
+            
+            <div class="banner-controls">
+                <div class="custom-select-container">
+                    <select name="date-range" id="report-date-range" class="premium-select">
+                        <option value="30">Last 30 Days</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="1">Today</option>
+                    </select>
+                </div>
+                <button class="btn-primary">
+                    <span>Download PDF</span>
+                    <i class="fa-solid fa-download"></i>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+<div id="fleetModal" class="profile-modal-overlay" style="display:none; z-index: 9999;">
+    <div class="profile-modal-content" style="max-width: 800px; width: 95%; max-height: 80vh; overflow-y: auto;">
+        <div class="profile-header">
+            <h2>Full Fleet Activity</h2>
+            <i class="fa-solid fa-xmark close-profile" id="closeFleetModal" style="cursor:pointer;"></i>
+        </div>
+        <div class="table-responsive" style="margin-top: 15px;">
+            <table class="activity-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 12px; border-bottom: 2px solid #eee;">Bus Reg</th>
+                        <th style="padding: 12px; border-bottom: 2px solid #eee;">Route</th>
+                        <th style="padding: 12px; border-bottom: 2px solid #eee;">Status</th>
+                        <th style="padding: 12px; border-bottom: 2px solid #eee;">Earned</th>
+                    </tr>
+                </thead>
+                <tbody id="fullFleetBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+    <div id="pdfPreviewModal" class="profile-modal-overlay" style="display:none; z-index: 9999;">
+        <div class="profile-modal-content" style="max-width: 850px; width: 95%; max-height: 90vh; overflow-y: auto;">
+            <div class="profile-header">
+                <h2>Report Preview</h2>
+                <i class="fa-solid fa-xmark close-profile" id="closePdfModal" style="cursor:pointer;"></i>
+            </div>
+            
+            <div id="pdfPrintArea" style="padding: 40px; background: white; color: #333; font-family: Arial, sans-serif;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #004C82; padding-bottom: 15px; margin-bottom: 25px;">
+                    <div>
+                        <h1 style="color: #004C82; margin: 0; font-size: 28px;">Obsidian Transit</h1>
+                        <h3 style="color: #666; margin: 5px 0 0 0; font-weight: normal;">Financial & Operational Report</h3>
+                    </div>
+                    <div style="text-align: right; color: #555; font-size: 14px;">
+                        <p style="margin: 0;"><strong>Operator:</strong> <span id="pdfOperatorName">Operator</span></p>
+                        <p style="margin: 5px 0 0 0;"><strong>Date:</strong> <span id="pdfDate"></span></p>
+                        <p style="margin: 5px 0 0 0;"><strong>Period:</strong> <span id="previewPeriod"></span></p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; gap: 15px; margin-bottom: 25px;">
+                    <div style="flex: 1; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                        <p style="margin: 0; font-size: 12px; color: #666; text-transform: uppercase;">Gross Earnings</p>
+                        <h2 id="prevEarnings" style="margin: 5px 0 0 0; color: #333; font-size: 22px;">LKR 0</h2>
+                    </div>
+                    <div style="flex: 1; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #004C82;">
+                        <p style="margin: 0; font-size: 12px; color: #666; text-transform: uppercase;">Total Passengers</p>
+                        <h2 id="prevTotalPax" style="margin: 5px 0 0 0; color: #004C82; font-size: 22px;">0</h2>
+                    </div>
+                </div>
+
+              <div style="background-color: #f0f7fb; border-left: 4px solid #3498db; padding: 15px; margin-bottom: 25px;">
+                    <h4 style="margin: 0 0 10px 0; color: #2980b9;">Executive Insights</h4>
+                    <ul id="pdfInsightsList" style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: #444;">
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #004C82; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px;">Fleet Performance Breakdown</h3>
+                    <div id="pdfBusBreakdown"></div>
+                </div>
+
+<div style="display: flex; flex-direction: column; gap: 30px; margin-bottom: 20px;">
+                    
+                    <div style="page-break-inside: avoid; background: #fff; padding-top: 10px;">
+                        <h3 style="color: #004C82; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px;">Passenger Traffic Trend</h3>
+                        <div style="border: 1px solid #eee; border-radius: 8px; padding: 10px; background: #fff;">
+                            <img id="pdfPassengerChartImg" style="width: 100%; height: auto; display: block;" alt="Passenger Chart">
+                        </div>
+                    </div>
+
+                    <div style="page-break-inside: avoid; background: #fff; padding-top: 10px;">
+                        <h3 style="color: #004C82; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; font-size: 16px;">Earnings Breakdown</h3>
+                        <div style="border: 1px solid #eee; border-radius: 8px; padding: 10px; position: relative; background: #fff;">
+                            <canvas id="hiddenEarningsCanvas" style="display:none;"></canvas>
+                            <img id="pdfEarningsChartImg" style="width: 100%; height: auto; display: block;" alt="Earnings Chart">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 30px; text-align: center; color: #aaa; font-size: 11px; border-top: 1px solid #eee; padding-top: 10px;">
+                    Report generated automatically by Obsidian Bus Tracking System. Strictly Confidential.
+                </div>
+            </div>
+
+            <div class="profile-actions" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <button type="button" id="cancelPdfBtn" style="padding: 10px 20px; border: none; border-radius: 5px; background: #e74c3c; color: white; cursor: pointer; font-weight: bold;">Cancel</button>
+                <button type="button" id="confirmDownloadBtn" style="padding: 10px 20px; border: none; border-radius: 5px; background: #004C82; color: white; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-download"></i> Save as PDF</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="../config.js"></script> 
+    <script src="js/navbar.js"></script>
+    <script src="js/home.js"></script> 
+</body>
+</html>

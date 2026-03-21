@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadDashboardStats(token) {
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/dashboard-stats`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/dashboard-stats`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ let homeStatusChart = null;
 
 async function initHomePageCharts(token, days = 30) {
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/reports/summary?days=${days}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/reports/summary?days=${days}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -280,7 +280,7 @@ generateBtn.addEventListener('click', async () => {
     `;
 
     try {
-        const response = await fetch(`${CONFIG.API_BASE_URL}/reports/summary?days=${days}`, {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/reports/summary?days=${days}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` } 
         });

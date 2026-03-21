@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!validateOperatorData(data)) return;
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/operators/create`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/operators/create`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!validateOperatorData(data)) return;
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/operators/update/${id}`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/operators/update/${id}`, {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadOperators() {
     const token = localStorage.getItem('adminToken');
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/operators`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/operators`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -245,7 +245,7 @@ window.updateOperatorStatus = async function(id, newStatus) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/operators/status/${id}`, { 
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/operators/status/${id}`, { 
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -300,7 +300,7 @@ window.deleteOperator = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/operators/${id}`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/operators/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
