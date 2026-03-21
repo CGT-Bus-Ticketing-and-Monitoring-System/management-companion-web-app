@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings Page</title>
+    <link rel="stylesheet" href="css/earnings.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-active-page="earnings">
+    <div id="navbar-placeholder"></div>
+
+    <div class="container">
+        
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Earnings By Date</h2>
+                <div class="date-filter">
+                    <select class="date-select" id="dateFilter" onchange="handleDateFilter()">
+                        <option value="1">Last 24 Hours</option>
+                        <option value="3">Last 3 Days</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="60">Last 60 Days</option>
+                    </select>
+                </div>
+            </div>
+
+            <table class="earnings-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Bus</th>
+                        <th>Route</th>
+                        <th>Trips Count</th>
+                        <th>Total Fares</th>
+                    </tr>
+                </thead>
+                <tbody id="earningsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        
+        <div class="card">
+            <h2 class="card-title" style="margin-bottom: 20px;">Earnings Chart Relative to Table</h2>
+            <div class="chart-container" id="chartContainer">
+                <canvas id="earningsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../config.js"></script>
+    <script src="js/earnings.js"></script>
+    <script src="js/navbar.js"></script>
+</body>
+</html>

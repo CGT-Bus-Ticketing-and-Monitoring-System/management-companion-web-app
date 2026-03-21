@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!validateAdminData(data)) return;
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/manage/register`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/manage/register`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!validateAdminData(data)) return;
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/manage/update/${currentEditAdminId}`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/manage/update/${currentEditAdminId}`, {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadAdmins() {
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/manage`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/manage`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -263,7 +263,7 @@ window.updateAdminStatus = async function(id, newStatus) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/manage/status/${id}`, { 
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/manage/status/${id}`, { 
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -318,7 +318,7 @@ window.deleteAdmin = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/manage/${id}`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/manage/${id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`

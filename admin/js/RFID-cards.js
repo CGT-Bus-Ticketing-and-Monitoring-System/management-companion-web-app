@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/cards/register`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/cards/register`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCards() {
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/cards`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/cards`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -193,7 +193,7 @@ window.updateStatus = async function(id, newStatus) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/cards/status/${id}`, { 
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/cards/status/${id}`, { 
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

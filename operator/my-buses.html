@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Buses - Obsidian Bus Tracking</title>
+    <link rel="stylesheet" href="css/my-buses.css">
+    <link rel="stylesheet" href="css/navbar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body data-active-page="my-buses">
+
+    <div id="navbar-placeholder"></div>
+
+    <main class="page-container">  
+              
+        <div class="page-header">
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="searchCardInput" class="input-field" placeholder="Search by Bus Name" style="max-width: 300px;">
+            </div> 
+            <button class="btn create-bus-btn" id="createBusBtn">
+                <i class="fa-solid fa-plus"></i> Create Bus
+            </button>
+        </div>
+
+        <div class="bus-list" id="busContainer">
+            </div>
+    </main>   
+    
+    <div id="createBusModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Create Bus</h2>
+            <form id="createBusForm">
+                <div class="modal-form-group">
+                    <label for="busName">Bus Name</label>
+                    <input type="text" id="busName" name="busName" required>
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="busModel">Model</label>
+                    <input type="text" id="busModel" name="busModel" required>
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="regNo">Registration No</label>
+                    <input type="text" id="regNo" name="regNo" required>
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="capacity">Capacity</label>
+                    <input type="number" id="capacity" name="capacity" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn modal-btn-blue">Create Bus</button>
+                    <button type="button" id="closeModalBtn" class="btn modal-btn-red">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editBusModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Edit Bus</h2>
+            <form id="editBusForm">
+                <div class="modal-form-group">
+                    <label for="editBusName">Bus Name</label>
+                    <input type="text" id="editBusName" name="editBusName" placeholder="Pre Filled Data">
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="editBusModel">Model</label>
+                    <input type="text" id="editBusModel" name="editBusModel" placeholder="Pre Filled Data">
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="editRegNo">Registration No</label>
+                    <input type="text" id="editRegNo" name="editRegNo" placeholder="Pre Filled Data">
+                </div>
+                
+                <div class="modal-form-group">
+                    <label for="editCapacity">Capacity</label>
+                    <input type="number" id="editCapacity" name="editCapacity" placeholder="Pre Filled Data">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn modal-btn-blue">Update</button>
+                    <button type="button" id="closeEditModalBtn" class="btn modal-btn-red">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/my-buses.js"></script>
+    <script src="../config.js"></script>
+    <script src="js/navbar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>

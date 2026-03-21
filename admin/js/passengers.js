@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = { first_name, last_name, username, email, phone, balance, card_id, password };
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/create`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers/create`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = { first_name, last_name, username, email, phone, balance, password };
 
             try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/update/${id}`, {
+                const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers/update/${id}`, {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 try {
-                    const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/replace-card`, {
+                    const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers/replace-card`, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadPassengers() {
     const token = localStorage.getItem('adminToken');
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -328,7 +328,7 @@ async function loadPassengers() {
 async function loadAvailableCards() {
     const token = localStorage.getItem('adminToken');
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/available-cards`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/available-cards`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         
@@ -391,7 +391,7 @@ window.updatePassengerStatus = async function(id, newStatus) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/status/${id}`, { 
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers/status/${id}`, { 
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -439,7 +439,7 @@ window.deletePassenger = async function(id) {
     if (!confirmation.isConfirmed) return;
 
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/${id}`, {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/admin/passengers/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
         });
