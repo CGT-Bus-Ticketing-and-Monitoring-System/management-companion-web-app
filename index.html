@@ -22,7 +22,7 @@
         </div>
 
         <div class="login-card">
-            <h2>Login</h2>
+            <h3>Login</h3>
             <form id="loginForm">
                 <div class="input-group">
                     <label for="username">Username</label>
@@ -39,6 +39,22 @@
 
                 <button type="submit">Login</button>
             </form>
+        </div>
+    </div>
+
+    <div id="roleModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Select Your Portal</h3>
+            <div class="role-options">
+                <button type="button" class="role-btn" onclick="selectRole('admin')">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Admin</span>
+                </button>
+                <button type="button" class="role-btn" onclick="selectRole('operator')">
+                    <i class="fa-solid fa-bus"></i>
+                    <span>Operator</span>
+                </button>
+            </div>
         </div>
     </div>
 
