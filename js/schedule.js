@@ -41,9 +41,8 @@ async function loadDropdownOptions(token) {
         });
 
         if (busResponse.ok) {
-            allBuses = await busResponse.json(); // Store all buses in memory
+            allBuses = await busResponse.json(); 
             const busSelect = document.getElementById('busSelect');
-            // Tell user to select route first
             busSelect.innerHTML = '<option value="" disabled selected>Select a Route First</option>'; 
         }
 
@@ -59,29 +58,32 @@ async function loadDropdownOptions(token) {
     }
 }
 
-// When Route is selected: Filter buses dropdown AND load the table
+// When Route is selected filter buses dropdown and load the table
 document.getElementById('routeSelect').addEventListener('change', () => {
     const token = localStorage.getItem('adminToken');
     const routeId = document.getElementById('routeSelect').value;
     
     if (routeId) {
-        // 1. Filter the Bus Dropdown based on the selected route
         const busSelect = document.getElementById('busSelect');
-        busSelect.innerHTML = '<option value="" disabled selected>Select Bus for New Schedule</option>';
         
         const filteredBuses = allBuses.filter(bus => bus.route_id == routeId);
         
         if (filteredBuses.length === 0) {
-            busSelect.innerHTML += `<option value="" disabled>No buses assigned to this route</option>`;
+            busSelect.innerHTML = `<option value="" disabled selected>No buses assigned to this route</option>`;
         } else {
+            busSelect.innerHTML = '<option value="all" selected>All Buses</option>';
             filteredBuses.forEach(bus => {
                 busSelect.innerHTML += `<option value="${bus.bus_id}">${bus.registration_number}</option>`;
             });
         }
 
-        // 2. Load the Schedule Table
         loadSchedules(routeId, token);
     }
+});
+
+// When Bus is selected refilter the already loaded schedule table
+document.getElementById('busSelect').addEventListener('change', () => {
+    renderScheduleTable();
 });
 
 // Fetches schedules from the database by Route ID
@@ -97,34 +99,53 @@ async function loadSchedules(routeId, token) {
         if (!response.ok) throw new Error('Failed to fetch schedules');
 
         currentSchedules = await response.json(); 
-        const schedules = currentSchedules;
+        renderScheduleTable(); 
 
-        tbody.innerHTML = '';
-
-        if (schedules.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No schedules found for this route.</td></tr>';
-            return;
-        }
-
-        schedules.forEach(sched => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="font-weight: bold; color: #004C82;">${sched.registration_number || 'Unknown'}</td>
-                <td>${sched.departure_time}</td>
-                <td>${sched.arrival_time}</td>
-                <td>${sched.direction}</td>
-                <td>${sched.status}</td>
-                <td class="action-icons">
-                    <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" onclick="editSchedule(${sched.schedule_id})"></i>
-                    <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: red;" onclick="deleteSchedule(${sched.schedule_id})"></i>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('scheduleTableBody').innerHTML = '<tr class="loading-row"><td colspan="7" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
+}
+
+// Filters and draws the table based on the Bus Dropdown
+function renderScheduleTable() {
+    const tbody = document.getElementById('scheduleTableBody');
+    const selectedBusId = document.getElementById('busSelect').value;
+    
+    tbody.innerHTML = '';
+
+    let schedulesToDisplay = currentSchedules;
+    if (selectedBusId && selectedBusId !== 'all') {
+        schedulesToDisplay = currentSchedules.filter(sched => sched.bus_id == selectedBusId);
+    }
+
+    if (schedulesToDisplay.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #4d4f51;">No schedules found for this selection.</td></tr>';
+        return;
+    }
+
+    schedulesToDisplay.forEach(sched => {
+        let statusColor = sched.status === 'ACTIVE' ? '#10b981' : '#e74c3c';
+
+        let statusToggleIcon = sched.status === 'ACTIVE'
+            ? `<i class="fa-solid fa-ban" style="cursor: pointer; color: #f59e0b; margin-right: 15px; font-size: 1.1rem;" onclick="updateScheduleStatus(${sched.schedule_id}, 'INACTIVE')" title="Deactivate Schedule"></i>`
+            : `<i class="fa-solid fa-check" style="cursor: pointer; color: #10b981; margin-right: 15px; font-size: 1.1rem;" onclick="updateScheduleStatus(${sched.schedule_id}, 'ACTIVE')" title="Activate Schedule"></i>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight: bold; color: #004C82;">${sched.registration_number || 'Unknown'}</td>
+            <td>${sched.departure_time}</td>
+            <td>${sched.arrival_time}</td>
+            <td>${sched.direction}</td>
+            <td><span style="color: ${statusColor}; font-weight: bold;">${sched.status}</span></td>
+            <td class="action-icons">
+                <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" onclick="editSchedule(${sched.schedule_id})" title="Edit"></i>
+                ${statusToggleIcon}
+                <i class="fa-solid fa-trash-can icon-delete" style="cursor: pointer; color: #e74c3c; font-size: 1.1rem;" onclick="deleteSchedule(${sched.schedule_id})" title="Permanently Delete"></i>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
 }
 
 // Fired when the "Edit" pencil icon is clicked in the table
@@ -139,6 +160,65 @@ window.editSchedule = function(scheduleId) {
 
     document.getElementById('editScheduleSection').style.display = 'block';
     document.getElementById('editScheduleSection').scrollIntoView({ behavior: 'smooth' });
+};
+
+// Fired when the Ban (Deactivate) or Check (Activate) icon is clicked
+window.updateScheduleStatus = async function(scheduleId, newStatus) {
+    const actionText = newStatus === 'ACTIVE' ? 'activate' : 'deactivate';
+    
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: `Do you want to ${actionText} this schedule?`,
+        icon: 'question',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#004C82',
+        cancelButtonColor: '#d33',
+        confirmButtonText: `Yes, ${actionText} it!`
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    const token = localStorage.getItem('adminToken');
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/schedules/status/${scheduleId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (response.ok) {
+            Swal.fire({
+                title: 'Success!',
+                text: `Schedule has been ${newStatus.toLowerCase()}d.`,
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            const currentRouteId = document.getElementById('routeSelect').value;
+            loadSchedules(currentRouteId, token);
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to update schedule status.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
 };
 
 // Fired when the "Delete" trash icon is clicked in the table
@@ -202,10 +282,10 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
     const busId = document.getElementById('busSelect').value;
     const routeId = document.getElementById('routeSelect').value; 
 
-    if (!busId || !routeId) {
+    if (!busId || busId === 'all' || !routeId) {
         return Swal.fire({
             title: 'Validation Error',
-            text: 'Please select both a Route and a Bus from the top section first!',
+            text: 'Please select a specific Route AND a specific Bus from the top dropdowns before adding a schedule!',
             icon: 'warning',
             iconColor: '#004C82',
             confirmButtonColor: '#004C82'
@@ -224,6 +304,25 @@ document.getElementById('addScheduleForm').addEventListener('submit', async (e) 
             iconColor: '#004C82',
             confirmButtonColor: '#004C82'
         });
+    }
+
+    // Check for Overnight Trips
+    if (departure_time >= arrival_time) {
+        const confirmOvernight = await Swal.fire({
+            title: 'Overnight Schedule?',
+            text: `You set Arrival (${arrival_time}) earlier than Departure (${departure_time}). Is this an overnight bus arriving the next day?`,
+            icon: 'question',
+            iconColor: '#004C82',
+            showCancelButton: true,
+            confirmButtonColor: '#004C82',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, it is overnight',
+            cancelButtonText: 'No, let me fix it'
+        });
+
+        if (!confirmOvernight.isConfirmed) {
+            return; 
+        }
     }
 
     const scheduleData = {
@@ -296,6 +395,25 @@ document.getElementById('editScheduleForm').addEventListener('submit', async (e)
             iconColor: '#004C82',
             confirmButtonColor: '#004C82'
         });
+    }
+
+    // Check for Overnight Trips
+    if (departure_time >= arrival_time) {
+        const confirmOvernight = await Swal.fire({
+            title: 'Overnight Trip?',
+            text: `You set Arrival (${arrival_time}) earlier than Departure (${departure_time}). Is this an overnight bus arriving the next day?`,
+            icon: 'question',
+            iconColor: '#004C82',
+            showCancelButton: true,
+            confirmButtonColor: '#004C82',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, it is overnight',
+            cancelButtonText: 'No, let me fix it'
+        });
+
+        if (!confirmOvernight.isConfirmed) {
+            return; 
+        }
     }
 
     const updatedData = {
