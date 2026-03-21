@@ -108,7 +108,7 @@ async function loadCards() {
         
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('cardsTableBody').innerHTML = '<tr class="loading-row"><td colspan="5" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        document.getElementById('cardsTableBody').innerHTML = '<tr class="loading-row"><td colspan="4" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 
@@ -117,32 +117,60 @@ function renderTable(cardsToDisplay) {
     tbody.innerHTML = '';
 
     if (cardsToDisplay.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No matching cards found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No matching cards found.</td></tr>';
         return;
     }
 
     cardsToDisplay.forEach(card => {
-        let statusColor = 'green';
-        if (card.status === 'BLOCKED') statusColor = 'red';
-        if (card.status === 'LOST') statusColor = 'orange';
-        if (card.status === 'INACTIVE') statusColor = 'gray';
+        let statusColor = '#10b981'; 
+        if (card.status === 'BLOCKED') statusColor = '#e74c3c'; 
+        if (card.status === 'LOST') statusColor = '#f59e0b'; 
+        if (card.status === 'INACTIVE') statusColor = '#4d4f51'; 
 
         let passengerDisplay = card.passenger_name;
         let passengerStyle = card.passenger_name === 'Unassigned' 
             ? 'color: #e74c3c; font-style: italic;' 
-            : 'color: #004C82; font-weight: bold;';
+            : 'color: #000000; font-weight: bold;';
+
+        let actionIconsHtml = '';
+        
+        if (card.status === 'ACTIVE') {
+            actionIconsHtml = `
+                <i class="fa-solid fa-ban" style="cursor: pointer; color: #e74c3c; margin-right: 15px;" 
+                   onclick="updateStatus('${card.card_id}', 'BLOCKED')" title="Block Card"></i>
+                <i class="fa-solid fa-triangle-exclamation" style="cursor: pointer; color: #f59e0b; margin-right: 15px;" 
+                   onclick="updateStatus('${card.card_id}', 'LOST')" title="Mark as Lost"></i>
+                <i class="fa-solid fa-trash-can" style="cursor: pointer; color: #4d4f51;" 
+                   onclick="updateStatus('${card.card_id}', 'INACTIVE')" title="Make Permanently Inactive"></i>
+            `;
+        } else if (card.status === 'BLOCKED') {
+            actionIconsHtml = `
+                <i class="fa-solid fa-check" style="cursor: pointer; color: #10b981; margin-right: 15px;" 
+                   onclick="updateStatus('${card.card_id}', 'ACTIVE')" title="Unblock & Activate"></i>
+                <i class="fa-solid fa-trash-can" style="cursor: pointer; color: #4d4f51;" 
+                   onclick="updateStatus('${card.card_id}', 'INACTIVE')" title="Make Permanently Inactive"></i>
+            `;
+        } else if (card.status === 'LOST') {
+            actionIconsHtml = `
+                <i class="fa-solid fa-check" style="cursor: pointer; color: #10b981; margin-right: 15px;" 
+                   onclick="updateStatus('${card.card_id}', 'ACTIVE')" title="Card Found (Activate)"></i>
+                <i class="fa-solid fa-trash-can" style="cursor: pointer; color: #4d4f51;" 
+                   onclick="updateStatus('${card.card_id}', 'INACTIVE')" title="Make Permanently Inactive"></i>
+            `;
+        } else if (card.status === 'INACTIVE') {
+            actionIconsHtml = `
+                <i class="fa-solid fa-check" style="cursor: pointer; color: #10b981;" 
+                   onclick="updateStatus('${card.card_id}', 'ACTIVE')" title="Activate Card"></i>
+            `;
+        }
 
         const row = `
             <tr>
-                <td>${card.card_id}</td>
                 <td>${card.rfid_uid}</td>
                 <td style="${passengerStyle}">${passengerDisplay}</td>
                 <td><span style="color: ${statusColor}; font-weight: bold;">${card.status}</span></td>
                 <td class="action-icons">
-                    <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c; margin-right: 10px;" 
-                       onclick="updateStatus('${card.card_id}', 'BLOCKED')" title="Block Card"></i>
-                    <i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #2ecc71;" 
-                       onclick="updateStatus('${card.card_id}', 'ACTIVE')" title="Activate Card"></i>
+                    ${actionIconsHtml}
                 </td>
             </tr>
         `;
