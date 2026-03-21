@@ -191,7 +191,6 @@ body {
 .cards-table td:first-child {
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
-    color: #0284c7;
     font-weight: 800;
 }
 

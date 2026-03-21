@@ -201,17 +201,23 @@ async function loadAdmins() {
         }
 
         admins.forEach(admin => {
+            let statusColor = admin.status === 'ACTIVE' ? '#16a34a' : '#ef4444';
+
+            let statusToggleIcon = admin.status === 'ACTIVE'
+                ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #f59e0b; margin-right: 15px; font-size: 1.1rem;" onclick="updateAdminStatus('${admin.admin_id}', 'INACTIVE')" title="Deactivate Admin"></i>`
+                : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #16a34a; margin-right: 15px; font-size: 1.1rem;" onclick="updateAdminStatus('${admin.admin_id}', 'ACTIVE')" title="Activate Admin"></i>`;
+
             const row = `
                 <tr>
-                    <td>${admin.admin_id}</td>
                     <td>${admin.username}</td>
                     <td>${admin.phone}</td>
-                    <td><span style="color: #16a34a; font-weight: 700;">${admin.status}</span></td>
+                    <td><span style="color: ${statusColor}; font-weight: 700;">${admin.status}</span></td>
                     <td class="action-icons">
                         <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;"
-                           onclick="setupEdit('${admin.admin_id}', '${admin.fname}', '${admin.lname}', '${admin.username}', '${admin.email}', '${admin.phone}')"></i>
-                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
-                           onclick="deactivateAdmin('${admin.admin_id}')"></i>
+                           onclick="setupEdit('${admin.admin_id}', '${admin.fname}', '${admin.lname}', '${admin.username}', '${admin.email}', '${admin.phone}')" title="Edit Admin"></i>
+                        ${statusToggleIcon}
+                        <i class="fa-solid fa-trash-can icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
+                           onclick="deleteAdmin('${admin.admin_id}')" title="Permanently Delete"></i>
                     </td>
                 </tr>
             `;
@@ -219,7 +225,7 @@ async function loadAdmins() {
         });
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        document.getElementById('adminTableBody').innerHTML = '<tr class="loading-row"><td colspan="4" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 
@@ -238,56 +244,116 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     editSection.style.display = 'block';    
     document.getElementById('editAdminForm').scrollIntoView({ behavior: 'smooth' });
 };
-window.deactivateAdmin = function(id) {
-    Swal.fire({
+
+// Fired when the Ban (Deactivate) or Check (Activate) icon is clicked
+window.updateAdminStatus = async function(id, newStatus) {
+    const actionText = newStatus === 'ACTIVE' ? 'activate' : 'deactivate';
+    
+    const confirmation = await Swal.fire({
         title: 'Are you sure?',
-        text: 'Do you want to deactivate this admin account?',
+        text: `Do you want to ${actionText} this admin account?`,
         icon: 'warning',
         iconColor: '#004C82',
         showCancelButton: true,
-        confirmButtonColor: '#ff2727e5',
+        confirmButtonColor: newStatus === 'ACTIVE' ? '#16a34a' : '#f59e0b',
         cancelButtonColor: '#004C82',
-        confirmButtonText: 'Yes, deactivate it!'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/manage/deactivate/${id}`, { 
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
-                    }
-                });
-
-                if (res.ok) {
-                    Swal.fire({
-                        title: 'Deactivated!',
-                        text: 'Admin has been deactivated.',
-                        icon: 'success',
-                        iconColor: '#004C82',
-                        confirmButtonColor: '#004C82'
-                    });
-                    loadAdmins(); 
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to deactivate admin.',
-                        icon: 'error',
-                        iconColor: '#004C82',
-                        confirmButtonColor: '#004C82'
-                    });
-                }
-            } catch (error) {
-                console.error('Deactivate Error:', error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Connection error occurred.',
-                    icon: 'error',
-                    iconColor: '#004C82',
-                    confirmButtonColor: '#004C82'
-                });
-            }
-        }
+        confirmButtonText: `Yes, ${actionText} it!`
     });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/manage/status/${id}`, { 
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (res.ok) {
+            Swal.fire({
+                title: 'Success!',
+                text: `Admin has been ${newStatus.toLowerCase()}d.`,
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadAdmins(); 
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: `Failed to ${actionText} admin.`,
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error('Status Update Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+};
+
+// Fired when the Trash Can (Permanent Delete) icon is clicked
+window.deleteAdmin = async function(id) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to permanently delete this admin. This action cannot be undone!",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, permanently delete!'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/manage/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        });
+
+        if (res.ok) {
+            Swal.fire({
+                title: 'Deleted!',
+                text: 'Admin account has been permanently deleted.',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadAdmins();
+        } else {
+            const result = await res.json();
+            Swal.fire({
+                title: 'Error',
+                text: result.message || 'Failed to delete admin.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error('Delete Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
 };
 
 document.getElementById('cancelEditBtn').addEventListener('click', () => {
