@@ -22,16 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
 
-            if (!/^\d+$/.test(route_code)) {
-                return Swal.fire({
-                    title: 'Validation Error',
-                    text: 'Route code must be a number only.',
-                    icon: 'warning',
-                    iconColor: '#004C82',
-                    confirmButtonColor: '#004C82'
-                });
-            }
-
             const data = { route_code, start_location, end_location, base_fare };
 
             try {
@@ -213,17 +203,24 @@ async function loadRoutes() {
         routes.forEach(r => {
             const row = `
                 <tr>
-                    <td>${r.route_code}</td>
+                    <td><span style="background: #333; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.9rem;">${r.route_code}</span></td>
                     <td>${r.start_location}</td>
                     <td>${r.end_location}</td>
                     <td>${parseFloat(r.base_fare).toFixed(2)}</td>
-                    <td><span style="color: green; font-weight: bold;">${r.status}</span></td>
+                    <td>
+                        <span style="color: ${r.status === 'ACTIVE' ? '#10b981' : '#e74c3c'}; font-weight: bold;">
+                            ${r.status}
+                        </span>
+                    </td>
                     <td>${r.assigned_buses}</td>
                     <td class="action-icons">
-                        <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #3498db; margin-right: 10px;" 
-                           onclick="setupEdit('${r.route_id}', '${r.start_location}', '${r.end_location}', '${r.base_fare}')"></i>
-                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c;" 
-                           onclick="deactivateRoute('${r.route_id}')"></i>
+                        <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82;; margin-right: 15px;" 
+                        onclick="setupEdit('${r.route_id}', '${r.start_location}', '${r.end_location}', '${r.base_fare}')"></i>
+                        
+                        ${r.status === 'ACTIVE' 
+                            ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c;" onclick="deactivateRoute('${r.route_id}')" title="Deactivate Route"></i>`
+                            : `<i class="fa-solid fa-check icon-activate" style="cursor: pointer; color: #10b981; margin-right: 10px;" onclick="activateRoute('${r.route_id}')" title="Activate Route"></i>`
+                        }
                     </td>
                 </tr>
             `;
@@ -287,6 +284,52 @@ window.deactivateRoute = async function(id) {
             Swal.fire({
                 title: 'Error',
                 text: 'Failed to deactivate route',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+};
+
+window.activateRoute = async function(id) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to activate this route?",
+        icon: 'question',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, activate it!'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/activate/${id}`, { method: 'PUT' });
+        if (res.ok) {
+            Swal.fire({
+                title: 'Activated!',
+                text: 'Route has been successfully activated.',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadRoutes();
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to activate route',
                 icon: 'error',
                 iconColor: '#004C82',
                 confirmButtonColor: '#004C82'
