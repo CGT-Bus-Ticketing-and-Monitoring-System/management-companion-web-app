@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.removeItem('authToken'); 
                     localStorage.removeItem('userRole'); 
 
-                    window.location.replace('index.html');
+                    window.location.replace('../index.html');
                 }
             });
         }
