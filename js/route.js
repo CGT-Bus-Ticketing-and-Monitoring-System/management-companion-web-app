@@ -230,14 +230,8 @@ async function loadRoutes() {
             tbody.innerHTML += row;
         });
     } catch (error) {
-        console.error('Error loading routes:', error);
-        Swal.fire({
-            title: 'Error',
-            text: 'Failed to load routes data.',
-            icon: 'error',
-            iconColor: '#004C82',
-            confirmButtonColor: '#004C82'
-        });
+        console.error('Network Error:', error);
+        document.getElementById('routeTableBody').innerHTML = '<tr class="loading-row"><td colspan="7" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 

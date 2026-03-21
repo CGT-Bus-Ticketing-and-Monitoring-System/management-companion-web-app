@@ -208,6 +208,46 @@ async function initHomePageCharts(token, days = 30) {
 
     } catch (err) {
         console.error("Home chart error:", err);
+        
+        // Handle Traffic Chart Error State
+        const ctxTraffic = document.getElementById('trafficChart');
+        if (ctxTraffic) {
+            ctxTraffic.style.display = 'none';
+            const trafficContainer = ctxTraffic.parentElement;
+            let msg = trafficContainer.querySelector('.no-data-msg');
+            if (!msg) {
+                msg = document.createElement('div');
+                msg.className = 'no-data-msg';
+                msg.style.cssText = 'height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;';
+                trafficContainer.appendChild(msg);
+            }
+            msg.innerHTML = `
+                <i class="fa-solid fa-server" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <span style="font-size: 0.95rem; font-weight: 600; color: #64748b;">Connection Failed</span>
+                <span style="font-size: 0.85rem; margin-top: 4px;">Unable to load traffic data</span>
+            `;
+            msg.style.display = 'flex';
+        }
+
+        // Handle Doughnut Chart Error State
+        const ctxStatus = document.getElementById('tripStatusChart');
+        if (ctxStatus) {
+            ctxStatus.style.display = 'none';
+            const statusContainer = ctxStatus.parentElement;
+            let msgStatus = statusContainer.querySelector('.no-data-msg');
+            if (!msgStatus) {
+                msgStatus = document.createElement('div');
+                msgStatus.className = 'no-data-msg';
+                msgStatus.style.cssText = 'height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;';
+                statusContainer.appendChild(msgStatus);
+            }
+            msgStatus.innerHTML = `
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <span style="font-size: 0.95rem; font-weight: 600; color: #64748b;">Data Unavailable</span>
+            `;
+            msgStatus.style.display = 'flex';
+        }
+
     }
 }
 

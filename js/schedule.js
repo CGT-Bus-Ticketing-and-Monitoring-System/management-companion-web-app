@@ -122,8 +122,8 @@ async function loadSchedules(routeId, token) {
             tbody.appendChild(tr);
         });
     } catch (error) {
-        console.error(error);
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error loading data.</td></tr>';
+        console.error('Network Error:', error);
+        document.getElementById('scheduleTableBody').innerHTML = '<tr class="loading-row"><td colspan="7" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 

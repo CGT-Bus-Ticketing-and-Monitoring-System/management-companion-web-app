@@ -202,7 +202,8 @@ async function loadOperators() {
             tbody.innerHTML += row;
         });
     } catch (error) {
-        console.error('Error loading operators:', error);
+        console.error('Network Error:', error);
+        document.getElementById('operatorTableBody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 //edit and deactivate
