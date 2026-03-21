@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
 // data loading
 async function loadPassengers() {
     const token = localStorage.getItem('adminToken');
@@ -277,17 +278,39 @@ async function loadPassengers() {
         }
 
         passengers.forEach(p => {
+            const currentStatus = p.status || p.acc_status || 'ACTIVE';
+            let statusColor = currentStatus === 'ACTIVE' ? '#16a34a' : '#ef4444';
+
+            let statusToggleIcon = currentStatus === 'ACTIVE'
+                ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #f59e0b; margin-right: 15px; font-size: 1.1rem;" onclick="updatePassengerStatus('${p.passenger_id}', 'INACTIVE')" title="Deactivate Passenger"></i>`
+                : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #16a34a; margin-right: 15px; font-size: 1.1rem;" onclick="updatePassengerStatus('${p.passenger_id}', 'ACTIVE')" title="Activate Passenger"></i>`;
+
+            const cardStatusText = p.card_status || 'N/A';
+            let cardStatusColor = '#4d4f51';
+            
+            if (cardStatusText === 'ACTIVE') {
+                cardStatusColor = '#10b981';
+            } else if (cardStatusText === 'BLOCKED') {
+                cardStatusColor = '#e74c3c'; 
+            } else if (cardStatusText === 'LOST') {
+                cardStatusColor = '#f59e0b'; 
+            } else if (cardStatusText === 'AVAILABLE') {
+                cardStatusColor = '#004C82'; 
+            }
+
             const row = `
                 <tr>
-                    <td>${p.passenger_id}</td>
                     <td>${p.username}</td>
                     <td>${p.balance}</td>
                     <td>${p.card_number || 'N/A'}</td>
-                    <td><span style="color: ${p.card_status === 'ACTIVE' ? 'green' : 'red'};">${p.card_status || 'N/A'}</span></td>
-                    <td><span style="color: green; font-weight: bold;">${p.acc_status}</span></td>
+                    <td><span style="color: ${cardStatusColor}; font-weight: bold;">${cardStatusText}</span></td>
+                    <td><span style="color: ${statusColor}; font-weight: bold;">${currentStatus}</span></td>
                     <td class="action-icons">
-                        <i class="fa-solid fa-pen-to-square icon-edit"  style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;"onclick="setupEdit('${p.passenger_id}', '${p.first_name}', '${p.last_name}', '${p.username}', '${p.email}', '${p.phone}', '${p.balance}')"></i>
-                        <i class="fa-solid fa-ban icon-delete" onclick="deactivatePassenger('${p.passenger_id}')"></i>
+                        <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;"
+                           onclick="setupEdit('${p.passenger_id}', '${p.first_name}', '${p.last_name}', '${p.username}', '${p.email}', '${p.phone}', '${p.balance}')" title="Edit Passenger"></i>
+                        ${statusToggleIcon}
+                        <i class="fa-solid fa-trash-can icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
+                           onclick="deletePassenger('${p.passenger_id}')" title="Permanently Delete"></i>
                     </td>
                 </tr>
             `;
@@ -298,7 +321,7 @@ async function loadPassengers() {
         });
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('passengerTableBody').innerHTML = '<tr class="loading-row"><td colspan="7" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        document.querySelector('.data-table tbody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 
@@ -350,55 +373,85 @@ window.setupEdit = function(id, fname, lname, username, email, phone, balance) {
     document.getElementById('editPassengerForm').scrollIntoView({ behavior: 'smooth' });
 };
 
-window.deactivatePassenger = async function(id) {
+// Fired when Deactivate or Activate icon is clicked
+window.updatePassengerStatus = async function(id, newStatus) {
+    const actionText = newStatus === 'ACTIVE' ? 'activate' : 'deactivate';
+    
     const confirmation = await Swal.fire({
         title: 'Are you sure?',
-        text: "Do you really want to deactivate this passenger?",
+        text: `Do you want to ${actionText} this passenger account?`,
         icon: 'warning',
+        iconColor: '#004C82',
         showCancelButton: true,
-        confirmButtonColor: '#d33',
+        confirmButtonColor: newStatus === 'ACTIVE' ? '#16a34a' : '#f59e0b',
         cancelButtonColor: '#004C82',
-        confirmButtonText: 'Yes, deactivate!',
-        iconColor: '#004C82'
+        confirmButtonText: `Yes, ${actionText} it!`
     });
 
     if (!confirmation.isConfirmed) return;
 
-    const token = localStorage.getItem('adminToken');
     try {
-        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/deactivate/${id}`, { 
+        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/status/${id}`, { 
             method: 'PUT',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            },
+            body: JSON.stringify({ status: newStatus })
         });
-        
+
         if (res.ok) {
             Swal.fire({
-                title: 'Deactivated!',
-                text: 'Passenger has been deactivated.',
+                title: 'Success!',
+                text: `Passenger has been ${newStatus.toLowerCase()}d.`,
                 icon: 'success',
                 iconColor: '#004C82',
                 confirmButtonColor: '#004C82'
             });
             loadPassengers(); 
         } else {
-            const result = await res.json();
             Swal.fire({
-                title: 'Error',
-                text: result.message || 'Failed to deactivate passenger',
+                title: 'Error!',
+                text: `Failed to ${actionText} passenger.`,
                 icon: 'error',
                 iconColor: '#004C82',
                 confirmButtonColor: '#004C82'
             });
         }
     } catch (error) {
-        console.error(error);
-        Swal.fire({
-            title: 'Connection Error',
-            text: 'Could not connect to the server.',
-            icon: 'error',
-            iconColor: '#004C82',
-            confirmButtonColor: '#004C82'
+        Swal.fire({ title: 'Error', text: 'Connection Error', icon: 'error', confirmButtonColor: '#004C82' });
+    }
+};
+
+// Fired when the Permanent Delete icon is clicked
+window.deletePassenger = async function(id) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to permanently delete this passenger. This action cannot be undone!",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444', 
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, permanently delete!'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/passengers/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
         });
+
+        if (res.ok) {
+            Swal.fire({ title: 'Deleted!', text: 'Passenger has been permanently deleted.', icon: 'success', iconColor: '#004C82', confirmButtonColor: '#004C82' });
+            loadPassengers();
+        } else {
+            Swal.fire({ title: 'Error', text: 'Failed to delete passenger.', icon: 'error', confirmButtonColor: '#004C82' });
+        }
+    } catch (error) {
+        Swal.fire({ title: 'Error', text: 'Connection Error', icon: 'error', confirmButtonColor: '#004C82' });
     }
 };
 
