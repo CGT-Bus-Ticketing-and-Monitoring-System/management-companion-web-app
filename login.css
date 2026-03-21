@@ -45,10 +45,10 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.login-card h2 {
+.login-card h3 {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 2rem;
+    font-size: 1.7rem;
     color: #000;
 }
 
@@ -161,3 +161,77 @@ button:hover {
 
 .toast.success { border-left-color: #004C82; }
 .toast-icon.success { color: #004C82; }
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(6, 32, 46, 0.85); 
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: translateY(-20px);
+}
+
+.modal-content h3 {
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.role-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.role-btn {
+    background: #f1f5f9;
+    color: #004C82; 
+    border: 2px solid transparent;
+    width: 130px;
+    height: 130px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    margin: 0;
+}
+
+.role-btn i {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.role-btn:hover {
+    background: #e0f2fe;
+    border-color: #004C82;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 76, 130, 0.2);
+}

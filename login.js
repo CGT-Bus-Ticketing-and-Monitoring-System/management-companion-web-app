@@ -1,3 +1,18 @@
+let selectedRole = ''; 
+
+function selectRole(role) {
+    selectedRole = role;
+    
+    document.getElementById('roleModal').classList.add('hidden');
+    
+    const loginTitle = document.querySelector('.login-card h3');
+    if (role === 'admin') {
+        loginTitle.innerText = 'Admin Login';
+    } else if (role === 'operator') {
+        loginTitle.innerText = 'Operator Login';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
 
