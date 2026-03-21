@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     showToast('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'home.html';
+                        window.location.href = 'admin/home.html';
                     }, 1000);
                     
                 } else {
