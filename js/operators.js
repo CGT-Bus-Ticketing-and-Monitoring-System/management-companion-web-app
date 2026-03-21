@@ -184,18 +184,24 @@ async function loadOperators() {
         }
 
         operators.forEach(op => {
+            let statusColor = op.status === 'ACTIVE' ? '#16a34a' : '#ef4444';
+
+            let statusToggleIcon = op.status === 'ACTIVE'
+                ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #f59e0b; margin-right: 15px; font-size: 1.1rem;" onclick="updateOperatorStatus('${op.operator_id}', 'INACTIVE')" title="Deactivate Operator"></i>`
+                : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #16a34a; margin-right: 15px; font-size: 1.1rem;" onclick="updateOperatorStatus('${op.operator_id}', 'ACTIVE')" title="Activate Operator"></i>`;
+
             const row = `
                 <tr>
-                    <td>${op.operator_id}</td>
                     <td>${op.username}</td>
                     <td>${op.phone || 'N/A'}</td>
                     <td>${op.no_of_buses}</td>
-                    <td><span style="color: #16a34a; font-weight: 700;">${op.status}</span></td>
+                    <td><span style="color: ${statusColor}; font-weight: 700;">${op.status}</span></td>
                     <td class="action-icons">
                         <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" 
-                           onclick="setupEdit('${op.operator_id}', '${op.fname}', '${op.lname}', '${op.username}', '${op.email}', '${op.phone}')"></i>
-                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
-                           onclick="deactivateOperator('${op.operator_id}')"></i>
+                           onclick="setupEdit('${op.operator_id}', '${op.fname}', '${op.lname}', '${op.username}', '${op.email}', '${op.phone}')" title="Edit Operator"></i>
+                        ${statusToggleIcon}
+                        <i class="fa-solid fa-trash-can icon-delete" style="cursor: pointer; color: #ef4444; font-size: 1.1rem;" 
+                           onclick="deleteOperator('${op.operator_id}')" title="Permanently Delete"></i>
                     </td>
                 </tr>
             `;
@@ -203,7 +209,7 @@ async function loadOperators() {
         });
     } catch (error) {
         console.error('Network Error:', error);
-        document.getElementById('operatorTableBody').innerHTML = '<tr class="loading-row"><td colspan="6" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
+        document.getElementById('operatorTableBody').innerHTML = '<tr class="loading-row"><td colspan="5" style="text-align: center; color: red;">Network error occurred. Make sure backend is running.</td></tr>';
     }
 }
 //edit and deactivate
@@ -221,58 +227,115 @@ window.setupEdit = function(id, fname, lname, username, email, phone) {
     document.getElementById('editOperatorForm').scrollIntoView({ behavior: 'smooth' });
 };
 
-window.deactivateOperator = function(id) {
-    Swal.fire({
+// Fired when the Deactivate or Activate icon is clicked
+window.updateOperatorStatus = async function(id, newStatus) {
+    const actionText = newStatus === 'ACTIVE' ? 'activate' : 'deactivate';
+    
+    const confirmation = await Swal.fire({
         title: 'Are you sure?',
-        text: 'Do you want to deactivate this operator?',
+        text: `Do you want to ${actionText} this operator?`,
         icon: 'warning',
         iconColor: '#004C82',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
+        confirmButtonColor: newStatus === 'ACTIVE' ? '#16a34a' : '#f59e0b',
         cancelButtonColor: '#004C82',
-        confirmButtonText: 'Yes, deactivate it!'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            const token = localStorage.getItem('adminToken');
-            try {
-                const res = await fetch(`${CONFIG.API_BASE_URL}/operators/deactivate/${id}`, { 
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                
-                if (res.ok) {
-                    Swal.fire({
-                        title: 'Deactivated!',
-                        text: 'Operator has been deactivated.',
-                        icon: 'success',
-                        iconColor: '#004C82',
-                        confirmButtonColor: '#004C82'
-                    });
-                    loadOperators(); 
-                } else {
-                    const resultData = await res.json();
-                    Swal.fire({
-                        title: 'Error!',
-                        text: resultData.message || 'Failed to deactivate operator.',
-                        icon: 'error',
-                        iconColor: '#004C82',
-                        confirmButtonColor: '#004C82'
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Connection error occurred.',
-                    icon: 'error',
-                    iconColor: '#004C82',
-                    confirmButtonColor: '#004C82'
-                });
-            }
-        }
+        confirmButtonText: `Yes, ${actionText} it!`
     });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/operators/status/${id}`, { 
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        if (res.ok) {
+            Swal.fire({
+                title: 'Success!',
+                text: `Operator has been ${newStatus.toLowerCase()}d.`,
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadOperators(); 
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: `Failed to ${actionText} operator.`,
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error('Status Update Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+};
+
+// Fired when the Permanent Delete icon is clicked
+window.deleteOperator = async function(id) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to permanently delete this operator. This action cannot be undone!",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444', 
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, permanently delete!'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/operators/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        });
+
+        if (res.ok) {
+            Swal.fire({
+                title: 'Deleted!',
+                text: 'Operator account has been permanently deleted.',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadOperators();
+        } else {
+            const result = await res.json();
+            Swal.fire({
+                title: 'Error',
+                text: result.message || 'Failed to delete operator.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error('Delete Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
 };
 
 document.getElementById('cancelEditBtn').addEventListener('click', () => {

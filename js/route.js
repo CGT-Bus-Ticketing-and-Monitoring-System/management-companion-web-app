@@ -218,9 +218,12 @@ async function loadRoutes() {
                         onclick="setupEdit('${r.route_id}', '${r.start_location}', '${r.end_location}', '${r.base_fare}')"></i>
                         
                         ${r.status === 'ACTIVE' 
-                            ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c;" onclick="deactivateRoute('${r.route_id}')" title="Deactivate Route"></i>`
+                            ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #f59e0b; margin-right: 10px;" onclick="deactivateRoute('${r.route_id}')" title="Deactivate Route"></i>`
                             : `<i class="fa-solid fa-check icon-activate" style="cursor: pointer; color: #10b981; margin-right: 10px;" onclick="activateRoute('${r.route_id}')" title="Activate Route"></i>`
                         }
+
+                        <i class="fa-solid fa-trash-can icon-delete" style="cursor: pointer; color: #e74c3c;" 
+                           onclick="deleteRoute('${r.route_id}')" title="Permanently Delete"></i>
                     </td>
                 </tr>
             `;
@@ -362,3 +365,54 @@ document.getElementById('cancelEditBtn').addEventListener('click', () => {
     document.getElementById('editRouteForm').reset();
     document.getElementById('editRouteSection').style.display = 'none';
 });
+
+window.deleteRoute = async function(id) {
+    const confirmation = await Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to permanently delete this route. This action cannot be undone!",
+        icon: 'warning',
+        iconColor: '#004C82',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c', 
+        cancelButtonColor: '#004C82',
+        confirmButtonText: 'Yes, permanently delete!'
+    });
+
+    if (!confirmation.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${CONFIG.API_BASE_URL}/routes/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            Swal.fire({
+                title: 'Deleted!',
+                text: 'Route has been permanently deleted.',
+                icon: 'success',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+            loadRoutes();
+            loadAssignmentDropdowns(); 
+        } else {
+            const result = await res.json();
+            Swal.fire({
+                title: 'Error',
+                text: result.message || 'Failed to delete route.',
+                icon: 'error',
+                iconColor: '#004C82',
+                confirmButtonColor: '#004C82'
+            });
+        }
+    } catch (error) {
+        console.error('Delete Error:', error);
+        Swal.fire({
+            title: 'Connection Error',
+            text: 'Could not connect to the server.',
+            icon: 'error',
+            iconColor: '#004C82',
+            confirmButtonColor: '#004C82'
+        });
+    }
+};
