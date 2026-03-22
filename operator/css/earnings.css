@@ -13,7 +13,6 @@ body {
     min-height: 100vh;
     padding-bottom: 60px;
     -webkit-font-smoothing: antialiased;
-    zoom: 0.85;
 }
 
 @keyframes slideUpFade {
@@ -126,11 +125,17 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.earnings-table td:first-child {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    color: #0284c7;
+    font-weight: 800;
+}
+
 .earnings-table td:last-child {
     border-top-right-radius: 16px;
     border-bottom-right-radius: 16px;
-    color: #0f172a;
-    font-weight: 800;
+    color: #10b981;
 }
 
 .earnings-table tbody tr:hover td {

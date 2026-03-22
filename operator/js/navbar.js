@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navbarPlaceholder) {
         navbarPlaceholder.outerHTML = `
             <header class="operator-navbar">
-                <div class="logo">Bus<br>Buddy</div>
+                <div class="logo">Obsidian Bus<br>Tracking</div>
         
                 <nav class="nav-links">
                     <a href="home.html" data-page="home">Home</a>
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
 
                         <div class="profile-actions">
-                            <button type="submit" class="btn btn-save">Save Changes</button>
                             <button type="button" class="btn btn-cancel" id="cancelProfileBtn">Cancel</button>
+                            <button type="submit" class="btn btn-save">Save Changes</button>
                         </div>
                     </form>
                 </div>
