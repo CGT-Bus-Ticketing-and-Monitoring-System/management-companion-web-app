@@ -118,7 +118,7 @@ window.deleteBus = async function(busId) {
 
     if (confirmation.isConfirmed) {
         try {
-            const response = await fetch(`${CONFIG.API_BASE_URL}operator/delete-bus/${busId}`, {
+            const response = await fetch(`${CONFIG.API_BASE_URL}/operator/delete-bus/${busId}`, {
                 method: 'DELETE'
             });
 
@@ -236,10 +236,14 @@ if (createForm) {
                     location.reload();
                 });
             } else {
+
+                const errorData = await response.json();
+                console.log("Server error data:", errorData); 
+                
                 Swal.fire({
-                    title: 'Error',
-                    text: 'Could not save the bus.',
-                    icon: 'error',
+                    title: 'Duplicate Found',
+                    text: errorData.message || 'A bus with this registration number already exists.',
+                    icon: 'warning',
                     iconColor: '#004C82',
                     confirmButtonColor: '#004C82'
                 });
@@ -340,7 +344,7 @@ if (editForm) {
         };
 
         try {
-            const response = await fetch(CONFIG.API_BASE_URL + '/update-bus/' + currentEditBusId, {
+            const response = await fetch(CONFIG.API_BASE_URL + '/operator/update-bus/' + currentEditBusId, {
                 method: 'PUT',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -364,7 +368,7 @@ if (editForm) {
                 const data = await response.json();
                 Swal.fire({
                     title: 'Error',
-                    text: data.message || 'Could not update the bus.',
+                    text: data.message || data.error || 'Could not update the bus. Registration number might already exist.',
                     icon: 'error',
                     iconColor: '#004C82',
                     confirmButtonColor: '#004C82'

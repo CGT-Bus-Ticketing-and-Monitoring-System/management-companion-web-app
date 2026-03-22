@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentPage = document.body.getAttribute('data-active-page');
         const links = document.querySelectorAll('.operator-navbar .nav-links a');
-
         links.forEach(link => {
             if (link.getAttribute('data-page') === currentPage) {
                 link.classList.add('active');
@@ -91,34 +90,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
 
-     if (openProfileBtn && profileModal) {
+        if (openProfileBtn && profileModal) {
             openProfileBtn.addEventListener('click', async () => {
-              
                 profileModal.style.display = 'flex';
-
                 const token = localStorage.getItem('operatorToken');
                 if (!token) return;
 
                 try {
                     const response = await fetch(`${CONFIG.API_BASE_URL}/operator/profile`, {
                         method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (response.ok) {
                         const data = await response.json();
-
                         document.getElementById('profFname').value = data.fname || '';
                         document.getElementById('profLname').value = data.lname || '';
                         document.getElementById('profEmail').value = data.email || '';
                         document.getElementById('profPhone').value = data.phone || '';
-                        
-                    
-                        if(data.fname) localStorage.setItem('operatorFName', data.fname);
-                    } else {
-                        console.error('Failed to load profile details');
                     }
                 } catch (error) {
                     console.error('Network error fetching profile:', error);
@@ -129,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeModal = () => {
             profileModal.style.display = 'none';
             profileForm.reset();
-            
             tabBtns.forEach(b => b.classList.remove('active'));
             tabContents.forEach(c => c.classList.remove('active'));
             document.querySelector('[data-tab="basic"]').classList.add('active');
@@ -139,42 +127,55 @@ document.addEventListener('DOMContentLoaded', () => {
         if (closeProfileModal) closeProfileModal.addEventListener('click', closeModal);
         if (cancelProfileBtn) cancelProfileBtn.addEventListener('click', closeModal);
 
-        window.addEventListener('click', (e) => {
-            if (e.target === profileModal) closeModal();
-        });
-
         tabBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetTab = btn.getAttribute('data-tab');
-
                 tabBtns.forEach(b => b.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-
                 btn.classList.add('active');
                 document.getElementById(`${targetTab}-tab`).classList.add('active');
             });
         });
 
-   if (profileForm) {
+        if (profileForm) {
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
+                const phone = document.getElementById('profPhone').value.trim();
                 const newPassword = document.getElementById('newPassword').value;
                 const confPassword = document.getElementById('confPassword').value;
 
-              
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    Swal.fire({
+                        title: 'Invalid Phone Number',
+                        text: 'Please enter a valid 10-digit phone number.',
+                        icon: 'warning',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82',
+                        target: document.getElementById('profileModal')
+                    });
+                    return; 
+                }
+
                 if (newPassword && newPassword !== confPassword) {
-                    alert("New passwords do not match!");
+                    Swal.fire({
+                        title: 'Password Mismatch',
+                        text: 'New passwords do not match!',
+                        icon: 'warning',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82',
+                        target: document.getElementById('profileModal')
+                    });
                     return;
                 }
 
-          
                 const profileData = {
-                    fname: document.getElementById('profFname').value,
-                    lname: document.getElementById('profLname').value,
-                    email: document.getElementById('profEmail').value,
-                    phone: document.getElementById('profPhone').value,
+                    fname: document.getElementById('profFname').value.trim(),
+                    lname: document.getElementById('profLname').value.trim(),
+                    email: document.getElementById('profEmail').value.trim(),
+                    phone: phone, 
                     currPassword: document.getElementById('currPassword').value,
                     newPassword: newPassword
                 };
@@ -194,32 +195,59 @@ document.addEventListener('DOMContentLoaded', () => {
                     const result = await response.json();
 
                     if (response.ok) {
-                        alert("Profile updated successfully!");
-                    
-                        localStorage.setItem('operatorFName', profileData.fname);
-                        closeModal();
-                        window.location.reload();
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Profile updated successfully!',
+                            icon: 'success',
+                            iconColor: '#004C82',
+                            confirmButtonColor: '#004C82'
+                        }).then(() => {
+                            localStorage.setItem('operatorFName', profileData.fname);
+                            closeModal();
+                            window.location.reload();
+                        });
                     } else {
-                        alert(`Error: ${result.message}`);
+                        Swal.fire({
+                            title: 'Update Failed',
+                            text: result.message || result.error || 'Something went wrong. Please try again.',
+                            icon: 'error',
+                            iconColor: '#004C82',
+                            confirmButtonColor: '#004C82',
+                            target: document.getElementById('profileModal')
+                        });
                     }
                 } catch (error) {
-                    console.error("Profile Update Error:", error);
-                    alert("Network error. Please try again.");
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Network error. Please try again.',
+                        icon: 'error',
+                        iconColor: '#004C82',
+                        confirmButtonColor: '#004C82',
+                        target: document.getElementById('profileModal') 
+                    });
                 }
             });
         }
 
         const logoutBtn = document.querySelector('.logout-btn');
-        
         if (logoutBtn) {
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                if (confirm("Are you sure you want to log out?")) {
-                    localStorage.removeItem('operatorToken');
-                    localStorage.removeItem('operatorFName');
-                    localStorage.removeItem('operatorId');
-                    window.location.replace('../index.html'); 
-                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will be logged out of your account.",
+                    icon: 'question',
+                    iconColor: '#004C82',
+                    showCancelButton: true,
+                    confirmButtonColor: '#004C82',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, Log Out'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.clear(); 
+                        window.location.replace('../index.html'); 
+                    }
+                });
             });
         }
     }

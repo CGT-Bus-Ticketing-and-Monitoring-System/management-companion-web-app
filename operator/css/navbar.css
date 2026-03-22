@@ -321,3 +321,7 @@
 .btn-save:active {
     transform: scale(0.96);
 }
+
+body .swal2-container {
+    z-index: 9999 !important;
+}
