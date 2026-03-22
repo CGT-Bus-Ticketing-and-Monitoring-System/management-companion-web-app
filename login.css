@@ -165,7 +165,7 @@ button:hover {
 .modal-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(6, 32, 46, 0.85); 
+    background: rgba(6, 32, 46, 0.90); 
     backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
@@ -180,58 +180,135 @@ button:hover {
     pointer-events: none;
 }
 
-.modal-content {
-    background: white;
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: translateY(0);
-    transition: transform 0.3s ease;
-}
-
-.modal-overlay.hidden .modal-content {
+.modal-overlay.hidden .role-selection-modal {
     transform: translateY(-20px);
 }
 
-.modal-content h3 {
-    margin-bottom: 25px;
-    color: #333;
-    font-size: 1.5rem;
+.role-selection-modal {
+    background: rgba(240, 248, 255, 0.88) !important; 
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 76, 130, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 30px 60px -15px rgba(0, 30, 60, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    text-align: center;
+    max-width: 700px !important; 
+    padding: 40px !important;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    margin: 0 20px; 
 }
 
-.role-options {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
+.role-modal-header {
+    margin-bottom: 35px;
 }
 
-.role-btn {
-    background: #f1f5f9;
-    color: #004C82; 
-    border: 2px solid transparent;
-    width: 130px;
-    height: 130px;
-    border-radius: 15px;
+.modal-logo-icon {
+    font-size: 2.5rem;
+    color: #004C82;
+    margin-bottom: 15px;
+}
+
+.role-modal-header h2 {
+    font-size: 2rem;
+    color: #002b4d; 
+    font-weight: 800;
+    margin-bottom: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.role-modal-header p {
+    color: #4b6a85; 
+    font-size: 1.05rem;
+}
+
+.role-cards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.role-card {
+    background: rgba(255, 255, 255, 0.95); 
+    border: 1px solid rgba(0, 76, 130, 0.08); 
+    border-radius: 20px;
+    padding: 30px 25px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-    margin: 0;
+    text-align: center;
+    box-shadow: 0 10px 25px -5px rgba(0, 76, 130, 0.05);
 }
 
-.role-btn i {
-    font-size: 2.5rem;
+.role-card:hover {
+    background: #ffffff; 
+    border-color: #004C82;
+    transform: translateY(-8px) scale(1.02); 
+    box-shadow: 0 20px 35px -10px rgba(0, 76, 130, 0.25);
+}
+
+.card-icon-wrapper {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.role-card:hover .card-icon-wrapper {
+    transform: scale(1.1);
+}
+
+.admin-bg {
+    background-color: #e0f2fe; 
+    color: #0ea5e9;
+}
+
+.operator-bg {
+    background-color: #e0f2fe; 
+    color: #0ea5e9;
+}
+
+.role-card h3 {
+    font-size: 1.3rem;
+    color: #002b4d; 
+    font-weight: 700;
     margin-bottom: 10px;
 }
 
-.role-btn:hover {
-    background: #e0f2fe;
-    border-color: #004C82;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 76, 130, 0.2);
+.role-card p {
+    color: #4b6a85; 
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+    flex-grow: 1; 
+}
+
+.card-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #004C82; 
+    font-weight: 600;
+    font-size: 1rem;
+    transition: gap 0.3s ease;
+}
+
+.role-card:hover .card-action {
+    gap: 12px; 
+}
+
+@media (max-width: 650px) {
+    .role-cards-container {
+        grid-template-columns: 1fr; 
+    }
+    .role-selection-modal {
+        padding: 25px !important;
+    }
 }

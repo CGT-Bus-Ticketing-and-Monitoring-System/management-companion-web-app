@@ -159,8 +159,10 @@ function renderTable(cardsToDisplay) {
             `;
         } else if (card.status === 'INACTIVE') {
             actionIconsHtml = `
-                <i class="fa-solid fa-check" style="cursor: pointer; color: #10b981;" 
+                <i class="fa-solid fa-check" style="cursor: pointer; color: #10b981; margin-right: 15px;" 
                    onclick="updateStatus('${card.card_id}', 'ACTIVE')" title="Activate Card"></i>
+                <i class="fa-solid fa-trash-can" style="cursor: pointer; color: #4d4f51;" 
+                   onclick="updateStatus('${card.card_id}', 'INACTIVE')" title="Make Permanently Inactive"></i>
             `;
         }
 
