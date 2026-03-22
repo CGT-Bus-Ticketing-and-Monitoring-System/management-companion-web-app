@@ -18,64 +18,12 @@ function handleLogout() {
     }
 }
 
-function fetchEarnings(days) {
-    var token = getToken();
-    if (!token) {
-        earningsData = [];
-        loadData();
-        return;
-    }
-
-    const url = `${CONFIG.API_BASE_URL}/operator/earnings?period=last${days}days`;
-    
-    document.getElementById('earningsTableBody').innerHTML = '<tr><td colspan="5" class="empty-state">Loading...</td></tr>';
-
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(function(response) {
-        if (response.status === 401) {
-            localStorage.removeItem('operatorToken');
-            earningsData = [];
-            loadData();
-            return null;
-        }
-        return response.json();
-    })
-    .then(function(data) {
-        earningsData = normalizeEarningsData(data);
-        loadData();
-    })
-    .catch(function(error) {
-        document.getElementById('earningsTableBody').innerHTML = `<tr><td colspan="5" class="empty-state">Error connecting to server: ${error.message}</td></tr>`;
-    });
-}
-
 function normalizeEarningsData(data) {
-    if (Array.isArray(data)) {
-        return data;
-    }
-
-    if (!data || typeof data !== 'object') {
-        return [];
-    }
-
-    if (Array.isArray(data.earnings_by_date)) {
-        return data.earnings_by_date;
-    }
-
-    if (Array.isArray(data.data)) {
-        return data.data;
-    }
-
-    if (Array.isArray(data.rows)) {
-        return data.rows;
-    }
-
+    if (Array.isArray(data)) return data;
+    if (!data || typeof data !== 'object') return [];
+    if (Array.isArray(data.earnings_by_date)) return data.earnings_by_date;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.rows)) return data.rows;
     return [];
 }
 
@@ -98,10 +46,10 @@ function loadData() {
             var item = earningsData[i];
             html += '<tr>';
             html += '<td>' + formatDate(item.date) + '</td>';
-            html += '<td>' + item.bus + '</td>';
-            html += '<td>' + item.route + '</td>';
-            html += '<td>' + item.trips_count + '</td>';
-            html += '<td>Rs.' + Number(item.total_fares).toFixed(2) + '</td>';
+            html += '<td>' + (item.bus || 'N/A') + '</td>';
+            html += '<td>' + (item.route || 'N/A') + '</td>';
+            html += '<td>' + (item.trips_count || 0) + '</td>';
+            html += '<td>Rs.' + Number(item.total_fares || 0).toFixed(2) + '</td>';
             html += '</tr>';
         }
     }
@@ -111,18 +59,17 @@ function loadData() {
 }
 
 function renderChart() {
-    var ctx = document.getElementById('earningsChart').getContext('2d');
+    var chartCanvas = document.getElementById('earningsChart');
+    if (!chartCanvas) return;
     
-    // Destroy old chart before creating a new one
-    if (earningsChart) {
-        earningsChart.destroy();
-    }
+    var ctx = chartCanvas.getContext('2d');
+    if (earningsChart) earningsChart.destroy();
 
     var labels = [];
     var fareValues = [];
     var busColors = [];
     var colorMap = {};
-    var colorPalette = ['#4A7BA7', '#7BB3E0', '#2c5282', '#5A9BD5', '#3B6FA0', '#8CC4E8'];
+    var colorPalette = ['#004C82', '#0ea5e9', '#2c5282', '#5A9BD5', '#3B6FA0', '#8CC4E8'];
     var colorIndex = 0;
     
     for (var i = 0; i < earningsData.length; i++) {
@@ -145,41 +92,91 @@ function renderChart() {
                 label: 'Earnings (Rs)',
                 data: fareValues,
                 backgroundColor: busColors,
-                borderColor: '#2c5282',
-                borderWidth: 1
+                borderRadius: 5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return 'Rs.' + value;
-                        }
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return 'Earnings: Rs.' + context.parsed.y;
-                        }
-                    }
-                }
+                y: { beginAtZero: true }
             }
         }
     });
 }
 
+async function fetchEarnings(days) {
+    var token = getToken();
+    if (!token) {
+        earningsData = [];
+        loadData();
+        return;
+    }
+
+    const baseUrl = CONFIG.API_BASE_URL.endsWith('/') ? CONFIG.API_BASE_URL.slice(0, -1) : CONFIG.API_BASE_URL;
+    const url = `${baseUrl}/operator/earnings?period=last${days}days`;
+    
+    const tableBody = document.getElementById('earningsTableBody');
+    const ctxTraffic = document.getElementById('earningsChart');
+    
+    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
+    
+    if (ctxTraffic) {
+        ctxTraffic.style.display = 'block'; 
+        const msg = ctxTraffic.parentElement.querySelector('.no-data-msg');
+        if (msg) msg.style.display = 'none';
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.status === 401) {
+            localStorage.removeItem('operatorToken');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        if (!response.ok) throw new Error("Server error");
+
+        const data = await response.json();
+        earningsData = normalizeEarningsData(data);
+        loadData();
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 50px; color: #64748b;"><i class="fa-solid fa-server"></i> Connection Failed</td></tr>`;
+
+        if (ctxTraffic) {
+            ctxTraffic.style.display = 'none'; 
+            const trafficContainer = ctxTraffic.parentElement;
+            
+            let msg = trafficContainer.querySelector('.no-data-msg');
+            if (!msg) {
+                msg = document.createElement('div');
+                msg.className = 'no-data-msg';
+                msg.style.cssText = 'height: 100%; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;';
+                trafficContainer.appendChild(msg);
+            }
+            
+            msg.innerHTML = `
+                <i class="fa-solid fa-server" style="font-size: 2.5rem; margin-bottom: 15px;"></i>
+                <span style="font-size: 1.1rem; font-weight: 700; color: #64748b;">Connection Failed</span>
+                <span style="font-size: 0.9rem; margin-top: 4px;">Unable to load chart data</span>
+            `;
+            msg.style.display = 'flex';
+        }
+    }
+}
+
 window.onload = function() {
-    var filter = document.getElementById('dateFilter').value;
-    fetchEarnings(filter);
+    var filterEl = document.getElementById('dateFilter');
+    var filterValue = filterEl ? filterEl.value : 30;
+    fetchEarnings(filterValue);
 };
