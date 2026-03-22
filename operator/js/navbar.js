@@ -239,8 +239,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     icon: 'question',
                     iconColor: '#004C82',
                     showCancelButton: true,
-                    confirmButtonColor: '#004C82',
-                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#004C82',
                     confirmButtonText: 'Yes, Log Out'
                 }).then((result) => {
                     if (result.isConfirmed) {

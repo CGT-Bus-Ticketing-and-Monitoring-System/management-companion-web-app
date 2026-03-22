@@ -43,17 +43,37 @@
     </div>
 
     <div id="roleModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Select Your Portal</h3>
-            <div class="role-options">
-                <button type="button" class="role-btn" onclick="selectRole('admin')">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <span>Admin</span>
-                </button>
-                <button type="button" class="role-btn" onclick="selectRole('operator')">
-                    <i class="fa-solid fa-bus"></i>
-                    <span>Operator</span>
-                </button>
+        <div class="modal-content role-selection-modal">
+            <div class="role-modal-header">
+                <div class="modal-logo-icon"><i class="fa-solid fa-route"></i></div>
+                <h2>Welcome to Bus Buddy</h2>
+                <p>Select your workspace portal to get started</p>
+            </div>
+            
+            <div class="role-cards-container">
+                <div class="role-card" onclick="selectRole('admin')">
+                    <div class="card-icon-wrapper admin-bg">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3>System Admin</h3>
+                    <p>Manage the entire fleet, assign routes, oversee users, and track system-wide analytics.</p>
+                    <div class="card-action">
+                        <span>Enter Portal</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <div class="role-card" onclick="selectRole('operator')">
+                    <div class="card-icon-wrapper operator-bg">
+                        <i class="fa-solid fa-bus"></i>
+                    </div>
+                    <h3>Bus Operator</h3>
+                    <p>Manage your personal fleet, track daily earnings, and view your specific fleet analytics.</p>
+                    <div class="card-action">
+                        <span>Enter Portal</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -514,7 +514,7 @@ downloadPdfBtn.addEventListener('click', async () => {
     
     const opt = {
         margin: [0.5, 0.5, 0.5, 0.5], 
-        filename: `Obsidian_Full_Report_${daysText}.pdf`,
+        filename: `Bus_Buddy_Report_${daysText}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
             scale: 2, 
@@ -536,7 +536,7 @@ downloadPdfBtn.addEventListener('click', async () => {
         element.style.height = 'auto';
         element.style.overflow = 'visible';
 
-        await new Promise(resolve => setTimeout(resolve, 800));
+        await new Promise(resolve => setTimeout(resolve, 100));
         await html2pdf().set(opt).from(element).save();
 
         document.body.style.zoom = originalZoom;
