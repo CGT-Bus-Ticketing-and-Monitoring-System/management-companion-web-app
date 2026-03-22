@@ -41,16 +41,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('active-buses').innerText = data.active_buses;
                 document.getElementById('inactive-buses').innerText = data.inactive_buses;
 
-                        const titleEl = document.getElementById('earnings-card-title');
-        if (titleEl) {
-            if (period === 'today') {
-                titleEl.innerHTML = "Today's<br>Earnings";
-            } else if (period === '7days') {
-                titleEl.innerHTML = "Last 7 Day's<br>Earnings";
-            } else if (period === '30days') {
-                titleEl.innerHTML = "Last 30 Day's<br>Earnings";
-            }
-}
+                const titleEl = document.getElementById('earnings-card-title');
+                if (titleEl) {
+                    if (period === 'today') {
+                        titleEl.innerHTML = "Today's<br>Earnings";
+                    } else if (period === '7days') {
+                        titleEl.innerHTML = "Last 7 Day's<br>Earnings";
+                    } else if (period === '30days') {
+                        titleEl.innerHTML = "Last 30 Day's<br>Earnings";
+                    }
+                }
                 
                 const formattedTotal = new Intl.NumberFormat().format(data.today_earnings);
                 document.getElementById('earnings-display').innerText = `LKR ${formattedTotal}`;
@@ -60,9 +60,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 drawChart(rawChartData);
                 populateDashboardTable(fullFleetActivity);
+            } else {
+                throw new Error("Failed to load dashboard data");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Server connection failed:", error);
+
+            document.getElementById('total-buses').innerText = '--';
+            document.getElementById('active-buses').innerText = '--';
+            document.getElementById('inactive-buses').innerText = '--';
+            document.getElementById('earnings-display').innerText = 'LKR --';
+
+            const ctxTraffic = document.getElementById('passengerTrendChart');
+            if (ctxTraffic) {
+                ctxTraffic.style.display = 'none'; 
+                const trafficContainer = ctxTraffic.parentElement;
+                
+                let msg = trafficContainer.querySelector('.no-data-msg');
+                if (!msg) {
+                    msg = document.createElement('div');
+                    msg.className = 'no-data-msg';
+                    msg.style.cssText = 'height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;';
+                    trafficContainer.appendChild(msg);
+                }
+                
+                msg.innerHTML = `
+                    <i class="fa-solid fa-server" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <span style="font-size: 0.95rem; font-weight: 600; color: #64748b;">Connection Failed</span>
+                    <span style="font-size: 0.85rem; margin-top: 4px;">Unable to load chart data</span>
+                `;
+                msg.style.display = 'flex';
+            }
+
+            const tbody = document.getElementById('recentActivityBody');
+            const viewAllBtn = document.getElementById('viewAllFleetBtn');
+            
+            if (tbody) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; padding: 40px 10px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px; display: block;"></i>
+                            <span style="font-size: 0.95rem; font-weight: 600; color: #64748b;">Server Unavailable</span><br>
+                            <span style="font-size: 0.85rem; color: #94a3b8;">Cannot fetch recent activity</span>
+                        </td>
+                    </tr>
+                `;
+            }
+            if (viewAllBtn) {
+                viewAllBtn.style.display = 'none';
+            }
         }
     }
 
@@ -125,61 +171,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateDashboardTable(activityData) {
-    const tbody = document.getElementById('recentActivityBody');
-    const viewAllBtn = document.getElementById('viewAllFleetBtn');
-    
-    if (!tbody) return;
-    
-    tbody.innerHTML = ''; 
-
-    if (!activityData || activityData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No fleet activity found.</td></tr>`;
-        if (viewAllBtn) viewAllBtn.style.display = 'none';
-        return;
-    }
-
-    const top5Data = activityData.slice(0, 5);
-
-    top5Data.forEach(row => {
-        const formattedEarned = new Intl.NumberFormat().format(row.earned || 0);
-        const statusColor = row.status === 'ACTIVE' ? '#2ecc71' : '#f1c40f';
+        const tbody = document.getElementById('recentActivityBody');
+        const viewAllBtn = document.getElementById('viewAllFleetBtn');
         
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>${row.registration_number || 'N/A'}</strong></td>
-                <td>${row.route_code || 'Unassigned'}</td>
-                <td><span class="badge" style="background-color: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${row.status}</span></td>
-                <td style="font-weight: bold; color: #004C82;">LKR ${formattedEarned}</td>
-            </tr>
-        `;
-    });
-
-    if (activityData.length > 5 && viewAllBtn) {
-        viewAllBtn.style.display = 'flex';
+        if (!tbody) return;
         
-        viewAllBtn.onclick = () => {
-            const fleetBody = document.getElementById('fullFleetBody');
-            fleetBody.innerHTML = '';
+        tbody.innerHTML = ''; 
+
+        if (!activityData || activityData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No fleet activity found.</td></tr>`;
+            if (viewAllBtn) viewAllBtn.style.display = 'none';
+            return;
+        }
+
+        const top5Data = activityData.slice(0, 5);
+
+        top5Data.forEach(row => {
+            const formattedEarned = new Intl.NumberFormat().format(row.earned || 0);
+            const statusColor = row.status === 'ACTIVE' ? '#2ecc71' : '#f1c40f';
             
-            fullFleetActivity.forEach(row => {
-                const formattedEarned = new Intl.NumberFormat().format(row.earned || 0);
-                const statusColor = row.status === 'ACTIVE' ? '#2ecc71' : '#f1c40f';
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${row.registration_number || 'N/A'}</strong></td>
+                    <td>${row.route_code || 'Unassigned'}</td>
+                    <td><span class="badge" style="background-color: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${row.status}</span></td>
+                    <td>LKR ${formattedEarned}</td>
+                    <td>
+                        ${row.status === 'ACTIVE' 
+                            ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c; font-size: 1.1rem;" title="Deactivate Bus" onclick="updateStatus(${row.bus_id}, 'INACTIVE')"></i>` 
+                            : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #2ecc71; font-size: 1.1rem;" title="Activate Bus" onclick="updateStatus(${row.bus_id}, 'ACTIVE')"></i>`
+                        }
+                    </td>
+                </tr>
+            `;
+        });
+
+        if (activityData.length > 5 && viewAllBtn) {
+            viewAllBtn.style.display = 'flex';
+            
+            viewAllBtn.onclick = () => {
+                const fleetBody = document.getElementById('fullFleetBody');
+                fleetBody.innerHTML = '';
                 
-                fleetBody.innerHTML += `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px;"><strong>${row.registration_number || 'N/A'}</strong></td>
-                        <td style="padding: 12px;">${row.route_code || 'Unassigned'}</td>
-                        <td style="padding: 12px;"><span class="badge" style="background-color: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px;">${row.status}</span></td>
-                        <td style="padding: 12px; font-weight: bold; color: #004C82;">LKR ${formattedEarned}</td>
-                    </tr>
-                `;
-            });
-            document.getElementById('fleetModal').style.display = 'flex';
-        };
-    } else if (viewAllBtn) {
-        viewAllBtn.style.display = 'none';
+                fullFleetActivity.forEach(row => {
+                    const formattedEarned = new Intl.NumberFormat().format(row.earned || 0);
+                    const statusColor = row.status === 'ACTIVE' ? '#2ecc71' : '#f1c40f';
+                    
+                    fleetBody.innerHTML += `
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 12px;"><strong>${row.registration_number || 'N/A'}</strong></td>
+                            <td style="padding: 12px;">${row.route_code || 'Unassigned'}</td>
+                            <td style="padding: 12px;"><span class="badge" style="background-color: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px;">${row.status}</span></td>
+                            <td style="padding: 12px; font-weight: bold; color: #004C82;">LKR ${formattedEarned}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('fleetModal').style.display = 'flex';
+            };
+        } else if (viewAllBtn) {
+            viewAllBtn.style.display = 'none';
+        }
     }
-}
 
     document.getElementById('closeFleetModal').addEventListener('click', () => {
         document.getElementById('fleetModal').style.display = 'none';
@@ -188,18 +240,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const downloadBtn = document.querySelector('.banner-controls .btn-primary');
     const pdfModal = document.getElementById('pdfPreviewModal');
     let hiddenEarningsChart = null;
+
     downloadBtn.addEventListener('click', async () => {
         const originalBtnHTML = downloadBtn.innerHTML;
         downloadBtn.innerHTML = '<span>Loading...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
         downloadBtn.disabled = true;
 
         try {
+            const printArea = document.getElementById('pdfPrintArea');
+            Array.from(printArea.children).forEach(child => {
+                if (child.id !== 'reportErrorState') child.style.display = ''; 
+            });
+            const existingError = document.getElementById('reportErrorState');
+            if (existingError) existingError.style.display = 'none';
+            document.getElementById('confirmDownloadBtn').style.display = 'inline-flex';
+
             const daysSelect = document.getElementById('report-date-range').value;
             const periodText = document.getElementById('report-date-range').options[document.getElementById('report-date-range').selectedIndex].text;
             
             const earningsRes = await fetch(`${CONFIG.API_BASE_URL}/operator/earnings?period=last${daysSelect}days`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            
+            if (!earningsRes.ok) throw new Error("Server response was not ok.");
+            
             const earningsDataRaw = await earningsRes.json();
             const earningsData = Array.isArray(earningsDataRaw) ? earningsDataRaw : (earningsDataRaw.data || []);
 
@@ -338,19 +402,42 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const opName = localStorage.getItem('operatorFName') || 'Operator';
-document.getElementById('pdfOperatorName').innerText = opName;
+            document.getElementById('pdfOperatorName').innerText = opName;
 
-const currentDate = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-});
-document.getElementById('pdfDate').innerText = currentDate;
+            const currentDate = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            document.getElementById('pdfDate').innerText = currentDate;
 
             pdfModal.style.display = 'flex';
 
         } catch (error) {
-            alert("Failed to load full report data. Please try again.");
+            console.error("Report Generation Error:", error);
+            
+            const printArea = document.getElementById('pdfPrintArea');
+            Array.from(printArea.children).forEach(child => child.style.display = 'none');
+            
+            let errorDiv = document.getElementById('reportErrorState');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'reportErrorState';
+                errorDiv.style.cssText = 'text-align: center; padding: 80px 20px;';
+                printArea.appendChild(errorDiv);
+            }
+            
+            errorDiv.innerHTML = `
+                <i class="fa-solid fa-server" style="font-size: 3.5rem; color: #64748b; margin-bottom: 20px;"></i>
+                <h3 style="color: #64748b; font-size: 1.5rem; margin-bottom: 10px;">Connection Failed</h3>
+                <p style="color: #64748b; font-size: 1.1rem;">Error loading report. Ensure the backend server is reachable.</p>
+            `;
+            errorDiv.style.display = 'block'; 
+            
+            document.getElementById('cancelPdfBtn').style.display = 'none'; 
+            document.getElementById('confirmDownloadBtn').style.display = 'none';
+            pdfModal.style.display = 'flex';
+
         } finally {
             downloadBtn.innerHTML = originalBtnHTML;
             downloadBtn.disabled = false;
@@ -361,32 +448,53 @@ document.getElementById('pdfDate').innerText = currentDate;
     document.getElementById('closePdfModal').addEventListener('click', closePdf);
     document.getElementById('cancelPdfBtn').addEventListener('click', closePdf);
 
-document.getElementById('confirmDownloadBtn').addEventListener('click', () => {
-        const printArea = document.getElementById('pdfPrintArea');
-   
-        const originalWidth = printArea.style.width;
-        printArea.style.width = '800px';
-
+    document.getElementById('confirmDownloadBtn').addEventListener('click', async () => {
+        const element = document.getElementById('pdfPrintArea'); 
+        const btn = document.getElementById('confirmDownloadBtn');
+        
         const opt = {
-            margin: [15, 15, 15, 15], 
-            filename: `Obsidian_Report_${new Date().toISOString().slice(0,10)}.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-       
-            pagebreak: { mode: ['css', 'legacy', 'avoid-all'] } 
+            margin: [0.5, 0.5, 0.5, 0.5], 
+            filename: `Obsidian_Operator_Report_${new Date().toISOString().slice(0,10)}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                scrollY: 0,
+                letterRendering: true 
+            }, 
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        const btn = document.getElementById('confirmDownloadBtn');
         const originalText = btn.innerHTML;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
         btn.disabled = true;
 
-        html2pdf().set(opt).from(printArea).save().then(() => {
-            printArea.style.width = originalWidth; 
+        const originalZoom = document.body.style.zoom || "0.85"; 
+
+        try {
+            document.body.style.zoom = "1";
+            element.style.height = 'auto';
+            element.style.overflow = 'visible';
+
+            await new Promise(resolve => setTimeout(resolve, 800));
+            await html2pdf().set(opt).from(element).save();
+
+            document.body.style.zoom = originalZoom;
+            element.style.height = '';
+            element.style.overflow = 'auto';
+            
             closePdf(); 
             btn.innerHTML = originalText;
             btn.disabled = false;
-        });
+            
+        } catch (error) {
+            console.error('PDF Error:', error);
+
+            document.body.style.zoom = originalZoom; 
+            element.style.height = '';
+            element.style.overflow = 'auto';
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
     });
 });

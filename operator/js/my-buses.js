@@ -9,12 +9,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function fetchBuses(id) {
+    const busContainer = document.getElementById('busContainer');
+    
     try {
+        busContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; width: 100%;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #004C82; margin-bottom: 10px;"></i>
+                <p style="color: #64748b; font-weight: 500;">Loading your fleet...</p>
+            </div>
+        `;
+
         const response = await fetch(`${CONFIG.API_BASE_URL}/operator/my-buses/${id}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         
-        const busContainer = document.getElementById('busContainer');
-        busContainer.innerHTML = ''; 
+        busContainer.innerHTML = '';
 
         if (data.length === 0) {
             busContainer.innerHTML = '<p class="no-data">No buses found for your account.</p>';
@@ -43,13 +56,13 @@ async function fetchBuses(id) {
                     <div class="card-right">
                         <div class="status-badge ${statusClass}">${bus.status}</div>
                         <div class="action-icons">
-                        <div class="action-icons">
-                        <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" title="Edit" onclick="openEditModal(${bus.bus_id}, '${safeName}', '${safeModel}', '${safeReg}', ${bus.capacity})"></i>
-                        <i class="fa-solid fa-trash delete-icon" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" title="Delete" onclick="deleteBus(${bus.bus_id})"></i>
-                        
-                        <i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c; margin-right: 15px; font-size: 1.1rem;" title="Deactivate Bus" onclick="updateStatus(${bus.bus_id}, 'INACTIVE')"></i>
-                        <i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #2ecc71; font-size: 1.1rem;" title="Activate Bus" onclick="updateStatus(${bus.bus_id}, 'ACTIVE')"></i>
-                    </div>
+                            <i class="fa-solid fa-pen-to-square icon-edit" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" title="Edit" onclick="openEditModal(${bus.bus_id}, '${safeName}', '${safeModel}', '${safeReg}', ${bus.capacity})"></i>
+                            <i class="fa-solid fa-trash delete-icon" style="cursor: pointer; color: #004C82; margin-right: 15px; font-size: 1.1rem;" title="Delete" onclick="deleteBus(${bus.bus_id})"></i>
+                            
+                            ${bus.status === 'ACTIVE' 
+                                ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c; font-size: 1.1rem;" title="Deactivate Bus" onclick="updateStatus(${bus.bus_id}, 'INACTIVE')"></i>` 
+                                : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #2ecc71; font-size: 1.1rem;" title="Activate Bus" onclick="updateStatus(${bus.bus_id}, 'ACTIVE')"></i>`
+                            }
                         </div>
                     </div>
                 </div>
@@ -57,6 +70,17 @@ async function fetchBuses(id) {
         });
     } catch (err) {
         console.error("Error fetching data:", err);
+
+        busContainer.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; width: 100%; background: #ffffff; border-radius: 16px; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-server" style="font-size: 3rem; color: #64748b; margin-bottom: 15px;"></i>
+                <h3 style="color: #64748b; font-size: 1.4rem; margin-bottom: 8px;">Connection Failed</h3>
+                <p style="color: #64748b; font-size: 1rem;">Unable to load your fleet data. Please check your backend server connection.</p>
+                <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 24px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; color: #0f172a; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-rotate-right" style="margin-right: 8px;"></i> Try Again
+                </button>
+            </div>
+        `;
     }
 }
 
