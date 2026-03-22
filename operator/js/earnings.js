@@ -69,7 +69,7 @@ function renderChart() {
     var fareValues = [];
     var busColors = [];
     var colorMap = {};
-    var colorPalette = ['#004C82', '#0ea5e9', '#2c5282', '#5A9BD5', '#3B6FA0', '#8CC4E8'];
+    var colorPalette = ['#004C82', '#004C82', '#004C82', '#004C82', '#004C82', '#004C82'];
     var colorIndex = 0;
     
     for (var i = 0; i < earningsData.length; i++) {
@@ -113,9 +113,32 @@ async function fetchEarnings(days) {
         return;
     }
 
-    const baseUrl = CONFIG.API_BASE_URL.endsWith('/') ? CONFIG.API_BASE_URL.slice(0, -1) : CONFIG.API_BASE_URL;
-    const url = `${baseUrl}/operator/earnings?period=last${days}days`;
+
+    const endDateObj = new Date();
+    const startDateObj = new Date();
     
+
+    if (days === 7) {
+        startDateObj.setDate(endDateObj.getDate() - 6);
+    } else if (days === 30) {
+        startDateObj.setDate(endDateObj.getDate() - 29);
+    } else if (days !== 1) {
+
+        startDateObj.setDate(endDateObj.getDate() - (days - 1));
+    }
+
+    const formatLocal = (d) => {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+    
+    const fromDate = formatLocal(startDateObj);
+    const toDate = formatLocal(endDateObj);
+
+    const baseUrl = CONFIG.API_BASE_URL.endsWith('/') ? CONFIG.API_BASE_URL.slice(0, -1) : CONFIG.API_BASE_URL;
+
+
+
+
     const tableBody = document.getElementById('earningsTableBody');
     const ctxTraffic = document.getElementById('earningsChart');
     

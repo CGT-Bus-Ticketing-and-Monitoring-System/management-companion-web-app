@@ -196,12 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${row.route_code || 'Unassigned'}</td>
                     <td><span class="badge" style="background-color: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${row.status}</span></td>
                     <td>LKR ${formattedEarned}</td>
-                    <td>
-                        ${row.status === 'ACTIVE' 
-                            ? `<i class="fa-solid fa-ban icon-delete" style="cursor: pointer; color: #e74c3c; font-size: 1.1rem;" title="Deactivate Bus" onclick="updateStatus(${row.bus_id}, 'INACTIVE')"></i>` 
-                            : `<i class="fa-solid fa-check icon-edit" style="cursor: pointer; color: #2ecc71; font-size: 1.1rem;" title="Activate Bus" onclick="updateStatus(${row.bus_id}, 'ACTIVE')"></i>`
-                        }
-                    </td>
+            
                 </tr>
             `;
         });
@@ -237,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('fleetModal').style.display = 'none';
     });
 
-    const downloadBtn = document.querySelector('.banner-controls .btn-primary');
+const downloadBtn = document.querySelector('.banner-controls .btn-primary');
     const pdfModal = document.getElementById('pdfPreviewModal');
     let hiddenEarningsChart = null;
 
@@ -258,15 +253,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const daysSelect = document.getElementById('report-date-range').value;
             const periodText = document.getElementById('report-date-range').options[document.getElementById('report-date-range').selectedIndex].text;
             
-            const earningsRes = await fetch(`${CONFIG.API_BASE_URL}/operator/earnings?period=last${daysSelect}days`, {
+
+            const endDateObj = new Date();
+            const startDateObj = new Date();
+            
+            
+            if (daysSelect === '7') {
+                startDateObj.setDate(endDateObj.getDate() - 6);
+            } else if (daysSelect === '30') {
+                startDateObj.setDate(endDateObj.getDate() - 29);
+            } 
+           
+
+
+            const formatLocal = (d) => {
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            };
+            
+            const fromDate = formatLocal(startDateObj);
+            const toDate = formatLocal(endDateObj);
+
+          
+            const earningsRes = await fetch(`${CONFIG.API_BASE_URL}/operator/earnings?fromDate=${fromDate}&toDate=${toDate}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+       
             
             if (!earningsRes.ok) throw new Error("Server response was not ok.");
             
             const earningsDataRaw = await earningsRes.json();
             const earningsData = Array.isArray(earningsDataRaw) ? earningsDataRaw : (earningsDataRaw.data || []);
 
+           
             const earnLabels = [];
             const earnValues = [];
             let totalFaresForPeriod = 0;
