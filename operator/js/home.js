@@ -331,7 +331,7 @@ const downloadBtn = document.querySelector('.banner-controls .btn-primary');
                     datasets: [{
                         label: 'Earnings (LKR)',
                         data: earnValues.length > 0 ? earnValues : [0],
-                        backgroundColor: '#2ecc71',
+                        backgroundColor: '#004C82',
                         borderWidth: 0,
                         borderRadius: 4
                     }]
