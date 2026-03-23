@@ -472,7 +472,7 @@ const downloadBtn = document.querySelector('.banner-controls .btn-primary');
         
         const opt = {
             margin: [0.5, 0.5, 0.5, 0.5], 
-            filename: `Obsidian_Operator_Report_${new Date().toISOString().slice(0,10)}.pdf`,
+            filename: `Bus_Buddy_Report_${new Date().toISOString().slice(0,10)}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { 
                 scale: 2, 
