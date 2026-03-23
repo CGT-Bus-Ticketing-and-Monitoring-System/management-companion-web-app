@@ -61,9 +61,34 @@ function loadData() {
 function renderChart() {
     var chartCanvas = document.getElementById('earningsChart');
     if (!chartCanvas) return;
-    
-    var ctx = chartCanvas.getContext('2d');
+
+     var ctx = chartCanvas.getContext('2d');
     if (earningsChart) earningsChart.destroy();
+
+    var chartContainer = chartCanvas.parentElement;
+    var msgElement = chartContainer.querySelector('.no-data-msg');
+
+    if (!earningsData || earningsData.length === 0) {
+    chartCanvas.style.display = 'none'; 
+
+    if (!msgElement) {
+            msgElement = document.createElement('div');
+            msgElement.className = 'no-data-msg';
+            msgElement.style.cssText = 'height: 100%; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #94a3b8; text-align: center;';
+            chartContainer.appendChild(msgElement);
+        }
+
+        msgElement.innerHTML = `
+            <i class="fa-solid fa-chart-bar" style="font-size: 2.5rem; margin-bottom: 15px; color: #cbd5e1;"></i>
+             <span style="font-size: 1.1rem; font-weight: 700; color: #64748b;">No Data Available</span>
+            <span style="font-size: 0.9rem; margin-top: 4px;">There are no earnings for the selected period.</span>
+         `;
+        msgElement.style.display = 'flex';
+        return; 
+    }
+
+    chartCanvas.style.display = 'block';
+    if (msgElement) msgElement.style.display = 'none';
 
     var labels = [];
     var fareValues = [];
@@ -71,37 +96,35 @@ function renderChart() {
     var colorMap = {};
     var colorPalette = ['#004C82', '#004C82', '#004C82', '#004C82', '#004C82', '#004C82'];
     var colorIndex = 0;
-    
+
     for (var i = 0; i < earningsData.length; i++) {
-        labels.push(formatDate(earningsData[i].date) + ' - ' + earningsData[i].bus);
+    labels.push(formatDate(earningsData[i].date) + ' - ' + earningsData[i].bus);
         fareValues.push(earningsData[i].total_fares);
-        
         var busName = earningsData[i].bus;
         if (!colorMap[busName]) {
             colorMap[busName] = colorPalette[colorIndex % colorPalette.length];
             colorIndex++;
-        }
-        busColors.push(colorMap[busName]);
     }
-    
+        busColors.push(colorMap[busName]);
+     }
     earningsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labels,
-            datasets: [{
-                label: 'Earnings (Rs)',
-                data: fareValues,
-                backgroundColor: busColors,
-                borderRadius: 5
+        labels: labels,
+        datasets: [{
+        label: 'Earnings (Rs)',
+        data: fareValues,
+        backgroundColor: busColors,
+        borderRadius: 5
             }]
-        },
+         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true }
-            }
-        }
+    y: { beginAtZero: true }
+    }
+     }
     });
 }
 
@@ -136,8 +159,7 @@ async function fetchEarnings(days) {
 
     const baseUrl = CONFIG.API_BASE_URL.endsWith('/') ? CONFIG.API_BASE_URL.slice(0, -1) : CONFIG.API_BASE_URL;
 
-
-
+    const url = `${baseUrl}/operator/earnings?fromDate=${fromDate}&toDate=${toDate}`;
 
     const tableBody = document.getElementById('earningsTableBody');
     const ctxTraffic = document.getElementById('earningsChart');
