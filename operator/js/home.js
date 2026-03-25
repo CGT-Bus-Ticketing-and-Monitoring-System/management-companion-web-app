@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedName = localStorage.getItem('operatorFName');
 
     if (!operatorId || !token) {
-        window.location.replace('index.html'); 
+        window.location.replace('../index.html'); 
         return;
     }
 

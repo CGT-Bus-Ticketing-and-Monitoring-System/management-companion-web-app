@@ -5,15 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
 
     if (!token) {
-        Swal.fire({
-            title: 'Unauthorized',
-            text: 'You must be logged in to view this page.',
-            icon: 'warning',
-            iconColor: '#004C82',
-            confirmButtonColor: '#004C82'
-        }).then(() => {
-            window.location.replace('index.html');
-        });
+        window.location.replace('../index.html');
         return; 
     }
 

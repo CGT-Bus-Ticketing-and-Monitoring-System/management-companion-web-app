@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-        window.location.replace('index.html');
+        window.location.replace('../index.html');
         return; 
     }
     
@@ -63,7 +63,7 @@ async function loadBusStatus(token) {
 
         if (response.status === 401 || response.status === 403) {
             localStorage.removeItem('adminToken');
-            window.location.replace('index.html');
+            window.location.replace('../index.html');
             return;
         }
 
