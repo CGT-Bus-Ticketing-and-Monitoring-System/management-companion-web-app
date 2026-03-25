@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const operatorId = localStorage.getItem('operatorId') || localStorage.getItem('operator_id');
+    const token = localStorage.getItem('operatorToken');
 
-    if (!operatorId) {
-        console.warn("No operator_id found in localStorage");
+    if (!operatorId || !token) {
+    window.location.replace('../index.html'); 
+    return;
     }
 
     fetchBuses(operatorId);

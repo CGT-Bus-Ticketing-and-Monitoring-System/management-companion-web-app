@@ -1,9 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
+
     if (!token) {
-        window.location.href = 'index.html'; 
+        window.location.href = '../index.html'; 
         return;
     }    
+    
     loadPassengers();
     loadAvailableCards();
 // create passenger     

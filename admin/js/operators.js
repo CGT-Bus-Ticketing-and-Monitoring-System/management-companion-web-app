@@ -28,15 +28,7 @@ function validateOperatorData(data) {
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Unauthorized',
-            text: 'You must be logged in to view this page.',
-            iconColor: '#004C82',
-            confirmButtonColor: '#004C82'
-        }).then(() => {
-            window.location.href = 'index.html';
-        });
+        window.location.href = '../index.html';
         return;
     }
 

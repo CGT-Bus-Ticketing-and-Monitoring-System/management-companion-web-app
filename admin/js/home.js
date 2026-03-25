@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('adminToken');
 
     if (!token) {
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
         return; 
     }
 
@@ -44,7 +44,7 @@ async function loadDashboardStats(token) {
         if (response.status === 401 || response.status === 403) {
             alert('Your session has expired. Please log in again.');
             localStorage.removeItem('adminToken'); 
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
             return;
         }
 

@@ -14,7 +14,7 @@ function handleLogout() {
     var confirmLogout = confirm('Are you sure you want to log out?');
     if (confirmLogout) {
         localStorage.removeItem('operatorToken');
-        window.location.href = 'index.html';
+        window.location.href = '../index.html';
     }
 }
 
@@ -131,8 +131,7 @@ function renderChart() {
 async function fetchEarnings(days) {
     var token = getToken();
     if (!token) {
-        earningsData = [];
-        loadData();
+        window.location.replace('../index.html');
         return;
     }
 
@@ -183,7 +182,7 @@ async function fetchEarnings(days) {
 
         if (response.status === 401) {
             localStorage.removeItem('operatorToken');
-            window.location.href = 'index.html';
+            window.location.href = '../index.html';
             return;
         }
 

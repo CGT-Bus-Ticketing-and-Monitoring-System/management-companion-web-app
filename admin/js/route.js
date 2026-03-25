@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('adminToken');
+    if (!token) {
+        window.location.replace('../index.html');
+        return; 
+    }
+
     loadRoutes();
     loadAssignmentDropdowns();
 
