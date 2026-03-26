@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadDashboardData();
 
+    //Load Chart
     function drawChart(chartData) {
         const ctx = document.getElementById('passengerTrendChart');
         if (!ctx) return;
@@ -170,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    //Populates Fleet
     function populateDashboardTable(activityData) {
         const tbody = document.getElementById('recentActivityBody');
         const viewAllBtn = document.getElementById('viewAllFleetBtn');
@@ -232,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('fleetModal').style.display = 'none';
     });
 
+//Download PDF
 const downloadBtn = document.querySelector('.banner-controls .btn-primary');
     const pdfModal = document.getElementById('pdfPreviewModal');
     let hiddenEarningsChart = null;
